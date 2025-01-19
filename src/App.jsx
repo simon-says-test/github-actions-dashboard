@@ -19,43 +19,15 @@ const App = () => {
     setSelectedWorkflow(event.target.value);
   };
 
-  const tableStyle = {
-    textAlign: 'left',
-    width: '100%',
-    borderCollapse: 'collapse',
-  };
-
-  const thTdStyle = {
-    textAlign: 'left',
-    padding: '8px',
-    border: '1px solid #ddd',
-  };
-
   const filteredRuns = workflowRuns.filter(run => run.workflow === selectedWorkflow);
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src="Octocat.png" className="App-logo" alt="logo" />
-        <p>
-          GitHub Codespaces <span className="heart">♥️</span> React
-        </p>
-        <p className="small">
-          Edit <code>src/App.jsx</code> and save to reload.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
+        <h1>GitHub Workflow Test Results</h1>
+        <img src="Octocat.png" className="App-logo-small" alt="logo" />
       </header>
       <main>
-        <h2>Workflow Runs</h2>
         <label htmlFor="workflow-select">Filter by workflow:</label>
         <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
           {Array.from(new Set(workflowRuns.map(run => run.workflow))).map(workflow => (
@@ -63,14 +35,14 @@ const App = () => {
           ))}
         </select>
         {filteredRuns.length > 0 ? (
-          <table style={tableStyle}>
+          <table className="tableStyle">
             <thead>
               <tr>
-                <th style={thTdStyle}>Repository</th>
-                <th style={thTdStyle}>Badge</th>
-                <th style={thTdStyle}>Workflow</th>
-                <th style={thTdStyle}>Job Name</th>
-                <th style={thTdStyle}>Summary</th>
+                <th className="thTdStyle">Repository</th>
+                <th className="thTdStyle">Job Name</th>
+                <th className="thTdStyle">Workflow Status</th>
+                <th className="thTdStyle" style={{ display: 'none' }}>Workflow</th>
+                <th className="thTdStyle">Summary</th>
               </tr>
             </thead>
             <tbody>
@@ -80,13 +52,13 @@ const App = () => {
                     .filter(job => job.summary)
                     .map((job, index) => (
                       <tr key={`${run.repository}-${run.workflow}-${job.name}-${index}`}>
-                        <td style={thTdStyle}>{run.repository}</td>
-                        <td style={thTdStyle}>
+                        <td className="thTdStyle">{run.repository}</td>
+                        <td className="thTdStyle">{job.name}</td>
+                        <td className="thTdStyle">
                           <img src={run.badge_url} alt={`${run.workflow} badge`} />
                         </td>
-                        <td style={thTdStyle}>{run.workflow}</td>
-                        <td style={thTdStyle}>{job.name}</td>
-                        <td style={thTdStyle}><pre>{job.summary}</pre></td>
+                        <td className="thTdStyle" style={{ display: 'none' }}>{run.workflow}</td>
+                        <td className="thTdStyle"><pre>{job.summary}</pre></td>
                       </tr>
                     ))
                 ) : null

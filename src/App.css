@@ -7,14 +7,20 @@
   pointer-events: none;
 }
 
+.App-logo-small {
+  height: 40px;
+  pointer-events: none;
+  margin-left: 10px; /* Add margin to the left of the logo */
+}
+
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  padding: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(8px + 2vmin);
   color: white;
 }
 
@@ -28,4 +34,53 @@
 
 .small {
   font-size: 0.75rem;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: small;
+}
+
+h1 {
+  margin: 0.3em;
+}
+
+table {
+  width: 90%;
+  margin: 15px auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  line-height: 1.2; /* Adjust line height */
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+select {
+  padding: 8px;
+  margin: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+pre {
+  margin: 0; /* Remove top and bottom margin */
 }
