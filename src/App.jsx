@@ -7,7 +7,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const runs = await fetchWorkflowRuns('FoodStandardsAgency', 'register-a-food-business-front-end');
+      const runs = await fetchWorkflowRuns('FoodStandardsAgency', ['register-a-food-business-front-end', 'register-a-food-business-service']);
       setWorkflowRuns(runs);
     };
 
@@ -53,6 +53,7 @@ const App = () => {
           <table style={tableStyle}>
             <thead>
               <tr>
+                <th style={thTdStyle}>Repository</th>
                 <th style={thTdStyle}>Badge</th>
                 <th style={thTdStyle}>Workflow</th>
                 <th style={thTdStyle}>Job Name</th>
@@ -65,7 +66,8 @@ const App = () => {
                   run.latestRun.testResults
                     .filter(job => job.summary)
                     .map((job, index) => (
-                      <tr key={`${run.workflow}-${job.name}-${index}`}>
+                      <tr key={`${run.repository}-${run.workflow}-${job.name}-${index}`}>
+                        <td style={thTdStyle}>{run.repository}</td>
                         <td style={thTdStyle}>
                           <img src={run.badge_url} alt={`${run.workflow} badge`} />
                         </td>

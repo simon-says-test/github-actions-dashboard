@@ -4,76 +4,84 @@ const octokit = new Octokit({
   auth: import.meta.env.VITE_ACTIONS_TOKEN,
 });
 
-export const fetchWorkflowRuns = async (owner, repo) => {
+export const fetchWorkflowRuns = async (owner, repos) => {
   try {
-    const workflowsResponse = await octokit.actions.listRepoWorkflows({
-      owner,
-      repo,
-    });
-
-    const workflows = workflowsResponse.data.workflows;
-
     const workflowRuns = await Promise.all(
-      workflows.map(async (workflow) => {
-        const runsResponse = await octokit.actions.listWorkflowRuns({
+      repos.map(async (repo) => {
+        const workflowsResponse = await octokit.actions.listRepoWorkflows({
           owner,
           repo,
-          workflow_id: workflow.id,
-          per_page: 1,
         });
 
-        const latestRun = runsResponse.data.workflow_runs[0];
+        const workflows = workflowsResponse.data.workflows;
 
-        if (latestRun) {
-          const jobsResponse = await octokit.actions.listJobsForWorkflowRun({
-            owner,
-            repo,
-            run_id: latestRun.id,
-          });
+        const repoWorkflowRuns = await Promise.all(
+          workflows.map(async (workflow) => {
+            const runsResponse = await octokit.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: workflow.id,
+              per_page: 1,
+            });
 
-          const checkRunsResponse = await octokit.checks.listForRef({
-            owner,
-            repo,
-            ref: latestRun.head_sha,
-          });
+            const latestRun = runsResponse.data.workflow_runs[0];
 
-          const testResults = await Promise.all(
-            jobsResponse.data.jobs.map(async (job) => {
-              const checkRun = checkRunsResponse.data.check_runs.find(run => run.name === job.name);
+            if (latestRun) {
+              const jobsResponse = await octokit.actions.listJobsForWorkflowRun({
+                owner,
+                repo,
+                run_id: latestRun.id,
+              });
 
-              let summary = '';
+              const checkRunsResponse = await octokit.checks.listForRef({
+                owner,
+                repo,
+                ref: latestRun.head_sha,
+              });
 
-              if (checkRun && checkRun.output && checkRun.output.summary) {
-                summary = checkRun.output.summary.split('Results for commit')[0].trim();
-              }
+              const testResults = await Promise.all(
+                jobsResponse.data.jobs.map(async (job) => {
+                  const checkRun = checkRunsResponse.data.check_runs.find(run => run.name === job.name);
+
+                  let summary = '';
+
+                  if (checkRun && checkRun.output && checkRun.output.summary) {
+                    summary = checkRun.output.summary.split('Results for commit')[0].trim();
+                  }
+
+                  return {
+                    name: job.name,
+                    summary,
+                  };
+                })
+              );
 
               return {
-                name: job.name,
-                summary,
+                repository: repo,
+                workflow: workflow.name,
+                badge_url: workflow.badge_url,
+                latestRun: {
+                  id: latestRun.id,
+                  status: latestRun.status,
+                  conclusion: latestRun.conclusion,
+                  testResults,
+                },
               };
-            })
-          );
+            }
 
-          return {
-            workflow: workflow.name,
-            badge_url: workflow.badge_url,
-            latestRun: {
-              id: latestRun.id,
-              status: latestRun.status,
-              conclusion: latestRun.conclusion,
-              testResults,
-            },
-          };
-        }
+            return {
+              repository: repo,
+              workflow: workflow.name,
+              latestRun: null,
+            };
+          })
+        );
 
-        return {
-          workflow: workflow.name,
-          latestRun: null,
-        };
+        return repoWorkflowRuns;
       })
     );
 
-    return workflowRuns;
+    return workflowRuns.flat();
   } catch (error) {
     console.error("Error fetching workflow runs:", error);
     return [];
