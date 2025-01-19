@@ -14,6 +14,18 @@ const App = () => {
     fetchData();
   }, []);
 
+  const tableStyle = {
+    textAlign: 'left',
+    width: '100%',
+    borderCollapse: 'collapse',
+  };
+
+  const thTdStyle = {
+    textAlign: 'left',
+    padding: '8px',
+    border: '1px solid #ddd',
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -38,44 +50,31 @@ const App = () => {
       <main>
         <h2>Workflow Runs</h2>
         {workflowRuns.length > 0 ? (
-          <table>
+          <table style={tableStyle}>
             <thead>
               <tr>
-                <th>Workflow</th>
-                <th>Run ID</th>
-                <th>Status</th>
-                <th>Conclusion</th>
-                <th>Job Name</th>
-                <th>Passed</th>
-                <th>Failed</th>
-                <th>Not Run</th>
+                <th style={thTdStyle}>Badge</th>
+                <th style={thTdStyle}>Workflow</th>
+                <th style={thTdStyle}>Job Name</th>
+                <th style={thTdStyle}>Summary</th>
               </tr>
             </thead>
             <tbody>
               {workflowRuns.map((run) => (
                 run.latestRun ? (
-                  run.latestRun.testResults.map((job, index) => (
-                    <tr key={`${run.workflow}-${job.name}-${index}`}>
-                      {index === 0 && (
-                        <>
-                          <td rowSpan={run.latestRun.testResults.length}>{run.workflow}</td>
-                          <td rowSpan={run.latestRun.testResults.length}>{run.latestRun.id}</td>
-                          <td rowSpan={run.latestRun.testResults.length}>{run.latestRun.status}</td>
-                          <td rowSpan={run.latestRun.testResults.length}>{run.latestRun.conclusion}</td>
-                        </>
-                      )}
-                      <td>{job.name}</td>
-                      <td>{job.passed}</td>
-                      <td>{job.failed}</td>
-                      <td>{job.notRun}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr key={run.workflow}>
-                    <td>{run.workflow}</td>
-                    <td colSpan="7">No runs available</td>
-                  </tr>
-                )
+                  run.latestRun.testResults
+                    .filter(job => job.summary)
+                    .map((job, index) => (
+                      <tr key={`${run.workflow}-${job.name}-${index}`}>
+                        <td style={thTdStyle}>
+                          <img src={run.badge_url} alt={`${run.workflow} badge`} />
+                        </td>
+                        <td style={thTdStyle}>{run.workflow}</td>
+                        <td style={thTdStyle}>{job.name}</td>
+                        <td style={thTdStyle}><pre>{job.summary}</pre></td>
+                      </tr>
+                    ))
+                ) : null
               ))}
             </tbody>
           </table>

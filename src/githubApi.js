@@ -31,45 +31,32 @@ export const fetchWorkflowRuns = async (owner, repo) => {
             run_id: latestRun.id,
           });
 
+          const checkRunsResponse = await octokit.checks.listForRef({
+            owner,
+            repo,
+            ref: latestRun.head_sha,
+          });
+
           const testResults = await Promise.all(
             jobsResponse.data.jobs.map(async (job) => {
-              const steps = job.steps || [];
-              const testStep = steps.find(step => step.name.toUpperCase().includes('TEST'));
+              const checkRun = checkRunsResponse.data.check_runs.find(run => run.name === job.name);
 
-              let passed = 0;
-              let failed = 0;
-              let notRun = 0;
+              let summary = '';
 
-              if (testStep) {
-                const logsResponse = await octokit.actions.downloadJobLogsForWorkflowRun({
-                  owner,
-                  repo,
-                  job_id: job.id,
-                });
-
-                const logs = logsResponse.data;
-                const passedMatch = logs.match(/(\d+) passed/);
-                const failedMatch = logs.match(/(\d+) failed/);
-                const notRunMatch = logs.match(/(\d+) not run/);
-
-                passed = passedMatch ? parseInt(passedMatch[1], 10) : 0;
-                failed = failedMatch ? parseInt(failedMatch[1], 10) : 0;
-                notRun = notRunMatch ? parseInt(notRunMatch[1], 10) : 0;
+              if (checkRun && checkRun.output && checkRun.output.summary) {
+                summary = checkRun.output.summary.split('Results for commit')[0].trim();
               }
 
               return {
                 name: job.name,
-                status: job.status,
-                conclusion: job.conclusion,
-                passed,
-                failed,
-                notRun,
+                summary,
               };
             })
           );
 
           return {
             workflow: workflow.name,
+            badge_url: workflow.badge_url,
             latestRun: {
               id: latestRun.id,
               status: latestRun.status,
