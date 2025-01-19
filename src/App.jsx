@@ -4,6 +4,7 @@ import { fetchWorkflowRuns } from './githubApi';
 
 const App = () => {
   const [workflowRuns, setWorkflowRuns] = useState([]);
+  const [selectedWorkflow, setSelectedWorkflow] = useState('Release');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,6 +14,10 @@ const App = () => {
 
     fetchData();
   }, []);
+
+  const handleWorkflowChange = (event) => {
+    setSelectedWorkflow(event.target.value);
+  };
 
   const tableStyle = {
     textAlign: 'left',
@@ -25,6 +30,8 @@ const App = () => {
     padding: '8px',
     border: '1px solid #ddd',
   };
+
+  const filteredRuns = workflowRuns.filter(run => run.workflow === selectedWorkflow);
 
   return (
     <div className="App">
@@ -49,7 +56,13 @@ const App = () => {
       </header>
       <main>
         <h2>Workflow Runs</h2>
-        {workflowRuns.length > 0 ? (
+        <label htmlFor="workflow-select">Filter by workflow:</label>
+        <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
+          {Array.from(new Set(workflowRuns.map(run => run.workflow))).map(workflow => (
+            <option key={workflow} value={workflow}>{workflow}</option>
+          ))}
+        </select>
+        {filteredRuns.length > 0 ? (
           <table style={tableStyle}>
             <thead>
               <tr>
@@ -61,7 +74,7 @@ const App = () => {
               </tr>
             </thead>
             <tbody>
-              {workflowRuns.map((run) => (
+              {filteredRuns.map((run) => (
                 run.latestRun ? (
                   run.latestRun.testResults
                     .filter(job => job.summary)
