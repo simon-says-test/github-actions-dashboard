@@ -27,12 +27,6 @@ export const fetchWorkflowRuns = async (owner, repos) => {
             const latestRun = runsResponse.data.workflow_runs[0];
 
             if (latestRun) {
-              const jobsResponse = await octokit.actions.listJobsForWorkflowRun({
-                owner,
-                repo,
-                run_id: latestRun.id,
-              });
-
               const checkRunsResponse = await octokit.checks.listForRef({
                 owner,
                 repo,
@@ -40,9 +34,7 @@ export const fetchWorkflowRuns = async (owner, repos) => {
               });
 
               const testResults = await Promise.all(
-                jobsResponse.data.jobs.map(async (job) => {
-                  const checkRun = checkRunsResponse.data.check_runs.find(run => run.name === job.name);
-
+                checkRunsResponse.data.check_runs.map(async (checkRun) => {
                   let summary = '';
 
                   if (checkRun && checkRun.output && checkRun.output.summary) {
@@ -50,7 +42,7 @@ export const fetchWorkflowRuns = async (owner, repos) => {
                   }
 
                   return {
-                    name: job.name,
+                    name: checkRun.name,
                     summary,
                   };
                 })
