@@ -1,29 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { fetchWorkflowRuns, fetchSecurityVulnerabilities } from './githubApi';
 import WorkflowRuns from './components/WorkflowRuns';
 import SecurityVulnerabilities from './components/SecurityVulnerabilities';
 
 const App = () => {
   const [workflowRuns, setWorkflowRuns] = useState([]);
   const [vulnerabilities, setVulnerabilities] = useState([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState('Release');
   const [activeTab, setActiveTab] = useState('workflows');
+  const [selectedWorkflow, setSelectedWorkflow] = useState('Release'); 
+  
+  const handleWorkflowChange = (event) => {
+    setSelectedWorkflow(event.target.value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const runs = await fetchWorkflowRuns('FoodStandardsAgency', ['register-a-food-business-front-end', 'register-a-food-business-service']);
-      setWorkflowRuns(runs);
-      const vulns = await fetchSecurityVulnerabilities('FoodStandardsAgency', ['register-a-food-business-front-end', 'register-a-food-business-service']);
-      setVulnerabilities(vulns);
+      try {
+        const workflowRunsResponse = await fetch('http://localhost:5000/api/workflow-runs?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service');
+        const workflowRunsData = await workflowRunsResponse.json();
+        setWorkflowRuns(workflowRunsData);
+      } catch (error) {
+        console.error('Error fetching workflow runs:', error);
+      }
+
+      try {
+        const vulnerabilitiesResponse = await fetch('http://localhost:5000/api/security-vulnerabilities?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service');
+        const vulnerabilitiesData = await vulnerabilitiesResponse.json();
+        setVulnerabilities(vulnerabilitiesData);
+      } catch (error) {
+        console.error('Error fetching security vulnerabilities:', error);
+      }
     };
 
     fetchData();
   }, []);
-
-  const handleWorkflowChange = (event) => {
-    setSelectedWorkflow(event.target.value);
-  };
 
   return (
     <div className="App">
@@ -37,11 +47,7 @@ const App = () => {
           <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>Security</button>
         </div>
         {activeTab === 'workflows' && (
-          <WorkflowRuns
-            workflowRuns={workflowRuns}
-            selectedWorkflow={selectedWorkflow}
-            handleWorkflowChange={handleWorkflowChange}
-          />
+          <WorkflowRuns workflowRuns={workflowRuns} selectedWorkflow={selectedWorkflow} handleWorkflowChange={handleWorkflowChange} />
         )}
         {activeTab === 'security' && (
           <SecurityVulnerabilities vulnerabilities={vulnerabilities} />
