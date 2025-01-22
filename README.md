@@ -43,7 +43,8 @@ This project is a React application that integrates with GitHub APIs to display 
 Create a `.env` file in the root directory and add the following environment variables:
 
 ```properties
-ACTIONS_TOKEN=your_actual_token_here
+VITE_ACTIONS_TOKEN=your_actual_token_here
+VITE_API_BASE_URL=http://localhost:5000
 ```
 
 Ensure that the `ACTIONS_TOKEN` secret is correctly set in your Codespace settings.

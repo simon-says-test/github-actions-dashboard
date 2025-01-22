@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const workflowRunsResponse = await fetch('http://localhost:5000/api/workflow-runs?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service');
+        const workflowRunsResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service`);
         const workflowRunsData = await workflowRunsResponse.json();
         setWorkflowRuns(workflowRunsData);
       } catch (error) {
@@ -24,7 +24,7 @@ const App = () => {
       }
 
       try {
-        const vulnerabilitiesResponse = await fetch('http://localhost:5000/api/security-vulnerabilities?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service');
+        const vulnerabilitiesResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/security-vulnerabilities?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service`);
         const vulnerabilitiesData = await vulnerabilitiesResponse.json();
         setVulnerabilities(vulnerabilitiesData);
       } catch (error) {
