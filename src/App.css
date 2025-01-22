@@ -80,7 +80,8 @@ pre {
 
 .tabs {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Align tabs to the left */
+  margin-top: 10px;
   margin-bottom: 20px;
 }
 
@@ -136,4 +137,17 @@ pre {
 
 .securityTable th, .securityTable td {
   width: 8%; /* Other columns width */
+}
+
+.workflowTable th:nth-child(1), .workflowTable td:nth-child(1),
+.workflowTable th:nth-child(2), .workflowTable td:nth-child(2) {
+  width: 15%; /* First and second columns width */
+}
+
+.workflowTable th:nth-child(3), .workflowTable td:nth-child(3) {
+  width: 30%; /* Third and fifth columns width */
+}
+
+.workflowTable th:nth-child(5), .workflowTable td:nth-child(5) {
+  width: 40%; /* Third and fifth columns width */
 }

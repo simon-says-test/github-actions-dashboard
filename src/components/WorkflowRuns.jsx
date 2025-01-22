@@ -1,22 +1,23 @@
 import React from 'react';
 
 const WorkflowRuns = ({ workflowRuns, selectedWorkflow, handleWorkflowChange }) => {
-  const filteredRuns = workflowRuns.filter(run => run.workflow === selectedWorkflow);
+  const filteredRuns = selectedWorkflow === 'all' ? workflowRuns : workflowRuns.filter(run => run.workflow === selectedWorkflow);
 
   return (
     <div>
       <label htmlFor="workflow-select">Filter by workflow:</label>
       <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
+        <option value="all">All</option>
         {Array.from(new Set(workflowRuns.map(run => run.workflow))).map(workflow => (
           <option key={workflow} value={workflow}>{workflow}</option>
         ))}
       </select>
       {filteredRuns.length > 0 ? (
-        <table className="tableStyle">
+        <table className="tableStyle workflowTable">
           <thead>
             <tr>
-              <th className="thTdStyle">Repository</th>
-              <th className="thTdStyle">Job Name</th>
+              <th className="thTdStyle" style={{ width: '20%' }}>Repository</th>
+              <th className="thTdStyle" style={{ width: '20%' }}>Job Name</th>
               <th className="thTdStyle">Workflow Status</th>
               <th className="thTdStyle" style={{ display: 'none' }}>Workflow</th>
               <th className="thTdStyle">Summary</th>
