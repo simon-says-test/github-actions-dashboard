@@ -8,7 +8,7 @@
 }
 
 .App-logo-small {
-  height: 40px;
+  height: 30px;
   pointer-events: none;
   margin-left: 10px; /* Add margin to the left of the logo */
 }
@@ -50,6 +50,7 @@ table {
   margin: 15px auto;
   border-collapse: collapse;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  table-layout: fixed; /* Ensure fixed column widths */
 }
 
 th, td {
@@ -61,14 +62,6 @@ th, td {
 
 th {
   background-color: #f4f4f4;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-tr:hover {
-  background-color: #f1f1f1;
 }
 
 select {
@@ -83,4 +76,64 @@ select {
 
 pre {
   margin: 0; /* Remove top and bottom margin */
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background-color: #61dafb;
+  color: white;
+}
+
+.fixed {
+  background-color: #d4edda; /* Muted green color */
+}
+
+.unfixed {
+  background-color: #f8d7da; /* Muted red color */
+}
+
+.toggleButton {
+  background-color: transparent;
+  color: #61dafb;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  margin-left: 5px;
+}
+
+.toggleButton:hover {
+  color: #4a9fd8;
+}
+
+.description {
+  white-space: normal; /* Allow text to wrap */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.securityTable th:nth-child(1), .securityTable td:nth-child(1) {
+  width: 18%; /* Repository column width */
+}
+
+.securityTable th:nth-child(2), .securityTable td:nth-child(2) {
+  width: 50%; /* Vulnerability column width */
+}
+
+.securityTable th, .securityTable td {
+  width: 8%; /* Other columns width */
 }

@@ -79,3 +79,26 @@ export const fetchWorkflowRuns = async (owner, repos) => {
     return [];
   }
 };
+
+export const fetchSecurityVulnerabilities = async (owner, repos) => {
+  try {
+    const vulnerabilities = await Promise.all(
+      repos.map(async (repo) => {
+        const response = await octokit.request('GET /repos/{owner}/{repo}/dependabot/alerts', {
+          owner,
+          repo,
+        });
+
+        return {
+          repository: repo,
+          vulnerabilities: response.data,
+        };
+      })
+    );
+
+    return vulnerabilities;
+  } catch (error) {
+    console.error("Error fetching security vulnerabilities:", error);
+    return [];
+  }
+};

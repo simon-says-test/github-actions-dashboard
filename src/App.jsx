@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { fetchWorkflowRuns } from './githubApi';
+import { fetchWorkflowRuns, fetchSecurityVulnerabilities } from './githubApi';
+import WorkflowRuns from './components/WorkflowRuns';
+import SecurityVulnerabilities from './components/SecurityVulnerabilities';
 
 const App = () => {
   const [workflowRuns, setWorkflowRuns] = useState([]);
+  const [vulnerabilities, setVulnerabilities] = useState([]);
   const [selectedWorkflow, setSelectedWorkflow] = useState('Release');
+  const [activeTab, setActiveTab] = useState('workflows');
 
   useEffect(() => {
     const fetchData = async () => {
       const runs = await fetchWorkflowRuns('FoodStandardsAgency', ['register-a-food-business-front-end', 'register-a-food-business-service']);
       setWorkflowRuns(runs);
+      const vulns = await fetchSecurityVulnerabilities('FoodStandardsAgency', ['register-a-food-business-front-end', 'register-a-food-business-service']);
+      setVulnerabilities(vulns);
     };
 
     fetchData();
@@ -19,8 +25,6 @@ const App = () => {
     setSelectedWorkflow(event.target.value);
   };
 
-  const filteredRuns = workflowRuns.filter(run => run.workflow === selectedWorkflow);
-
   return (
     <div className="App">
       <header className="App-header">
@@ -28,45 +32,19 @@ const App = () => {
         <img src="Octocat.png" className="App-logo-small" alt="logo" />
       </header>
       <main>
-        <label htmlFor="workflow-select">Filter by workflow:</label>
-        <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
-          {Array.from(new Set(workflowRuns.map(run => run.workflow))).map(workflow => (
-            <option key={workflow} value={workflow}>{workflow}</option>
-          ))}
-        </select>
-        {filteredRuns.length > 0 ? (
-          <table className="tableStyle">
-            <thead>
-              <tr>
-                <th className="thTdStyle">Repository</th>
-                <th className="thTdStyle">Job Name</th>
-                <th className="thTdStyle">Workflow Status</th>
-                <th className="thTdStyle" style={{ display: 'none' }}>Workflow</th>
-                <th className="thTdStyle">Summary</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRuns.map((run) => (
-                run.latestRun ? (
-                  run.latestRun.testResults
-                    .filter(job => job.summary)
-                    .map((job, index) => (
-                      <tr key={`${run.repository}-${run.workflow}-${job.name}-${index}`}>
-                        <td className="thTdStyle">{run.repository}</td>
-                        <td className="thTdStyle">{job.name}</td>
-                        <td className="thTdStyle">
-                          <img src={run.badge_url} alt={`${run.workflow} badge`} />
-                        </td>
-                        <td className="thTdStyle" style={{ display: 'none' }}>{run.workflow}</td>
-                        <td className="thTdStyle"><pre>{job.summary}</pre></td>
-                      </tr>
-                    ))
-                ) : null
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>Loading...</p>
+        <div className="tabs">
+          <button className={activeTab === 'workflows' ? 'active' : ''} onClick={() => setActiveTab('workflows')}>Workflows</button>
+          <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>Security</button>
+        </div>
+        {activeTab === 'workflows' && (
+          <WorkflowRuns
+            workflowRuns={workflowRuns}
+            selectedWorkflow={selectedWorkflow}
+            handleWorkflowChange={handleWorkflowChange}
+          />
+        )}
+        {activeTab === 'security' && (
+          <SecurityVulnerabilities vulnerabilities={vulnerabilities} />
         )}
       </main>
     </div>
