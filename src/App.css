@@ -82,7 +82,7 @@ pre {
   display: flex;
   justify-content: flex-start; /* Align tabs to the left */
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .tabs button {

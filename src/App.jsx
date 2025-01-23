@@ -38,7 +38,7 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>GitHub Workflow Test Results</h1>
+        <h1>GitHub Repository Dashboard</h1>
         <img src="Octocat.png" className="App-logo-small" alt="logo" />
       </header>
       <main>

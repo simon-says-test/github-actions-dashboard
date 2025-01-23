@@ -5,6 +5,7 @@ const WorkflowRuns = ({ workflowRuns, selectedWorkflow, handleWorkflowChange }) 
 
   return (
     <div>
+      <h2>Workflow Runs Test Results</h2>
       <label htmlFor="workflow-select">Filter by workflow:</label>
       <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
         <option value="all">All</option>
