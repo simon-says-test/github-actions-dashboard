@@ -20,7 +20,7 @@ const App = () => {
         const workflowRunsData = await workflowRunsResponse.json();
         setWorkflowRuns(workflowRunsData);
       } catch (error) {
-        console.error('Error fetching workflow runs:', error);
+        console.error('Error fetching workflow runs :', error);
       }
 
       try {
