@@ -21,16 +21,21 @@ const githubApi = axios.create({
 
 app.get('/api/workflow-runs', async (req, res) => {
   const { owner, repos } = req.query;
+  console.log('Fetching workflow runs for owner:', owner, 'repos:', repos);
   try {
     const workflowRuns = await Promise.all(
       repos.split(',').map(async (repo) => {
+        console.log('Fetching workflows for repo:', repo);
         const workflowsResponse = await githubApi.get(`/repos/${owner}/${repo}/actions/workflows`);
         const workflows = workflowsResponse.data.workflows;
+        console.log('Workflows fetched:', workflows); 
 
         const repoWorkflowRuns = await Promise.all(
           workflows.map(async (workflow) => {
+            console.log('Fetching runs for workflow:', workflow.name); 
             const runsResponse = await githubApi.get(`/repos/${owner}/${repo}/actions/workflows/${workflow.id}/runs?per_page=1`);
             const latestRun = runsResponse.data.workflow_runs[0];
+            console.log('Latest run:', latestRun); 
 
             if (latestRun) {
               const checkRunsResponse = await githubApi.get(`/repos/${owner}/${repo}/commits/${latestRun.head_sha}/check-runs`);
@@ -38,6 +43,7 @@ app.get('/api/workflow-runs', async (req, res) => {
                 name: checkRun.name,
                 summary: checkRun.output.summary ? checkRun.output.summary.split('Results for commit')[0].trim() : '',
               }));
+              // console.log('Test results:', testResults); 
 
               return {
                 repository: repo,

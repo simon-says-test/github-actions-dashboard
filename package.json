@@ -25,7 +25,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "server": "nodemon server/index.js"
+    "debug": "concurrently \"vite --port 3000\" \"nodemon --inspect server/index.js\""
   },
   "eslintConfig": {
     "extends": [
