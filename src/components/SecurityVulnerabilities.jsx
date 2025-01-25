@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const SecurityVulnerabilities = ({ vulnerabilities }) => {
+const SecurityVulnerabilities = () => {
+  const [vulnerabilities, setVulnerabilities] = useState([]);
   const [filters, setFilters] = useState({
     repository: 'all',
     severity: 'all',
     status: 'all'
   });
   const [expandedVulns, setExpandedVulns] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query = new URLSearchParams(filters).toString();
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/security-vulnerabilities?${query}`);
+        const data = await response.json();
+        setVulnerabilities(data);
+      } catch (error) {
+        console.error('Error fetching security vulnerabilities:', error);
+      }
+    };
+
+    fetchData();
+  }, [filters]);
 
   const handleFilterChange = (column, value) => {
     setFilters(prevFilters => ({

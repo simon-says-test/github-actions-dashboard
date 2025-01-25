@@ -1,39 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import WorkflowRuns from './components/WorkflowRuns';
 import SecurityVulnerabilities from './components/SecurityVulnerabilities';
 
 const App = () => {
-  const [workflowRuns, setWorkflowRuns] = useState([]);
-  const [vulnerabilities, setVulnerabilities] = useState([]);
   const [activeTab, setActiveTab] = useState('workflows');
-  const [selectedWorkflow, setSelectedWorkflow] = useState('Release'); 
-  
+  const [selectedWorkflow, setSelectedWorkflow] = useState('all');
+
   const handleWorkflowChange = (event) => {
     setSelectedWorkflow(event.target.value);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const workflowRunsResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service`);
-        const workflowRunsData = await workflowRunsResponse.json();
-        setWorkflowRuns(workflowRunsData);
-      } catch (error) {
-        console.error('Error fetching workflow runs :', error);
-      }
-
-      try {
-        const vulnerabilitiesResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/security-vulnerabilities?owner=FoodStandardsAgency&repos=register-a-food-business-front-end,register-a-food-business-service`);
-        const vulnerabilitiesData = await vulnerabilitiesResponse.json();
-        setVulnerabilities(vulnerabilitiesData);
-      } catch (error) {
-        console.error('Error fetching security vulnerabilities:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="App">
@@ -47,10 +23,10 @@ const App = () => {
           <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>Security</button>
         </div>
         {activeTab === 'workflows' && (
-          <WorkflowRuns workflowRuns={workflowRuns} selectedWorkflow={selectedWorkflow} handleWorkflowChange={handleWorkflowChange} />
+          <WorkflowRuns selectedWorkflow={selectedWorkflow} handleWorkflowChange={handleWorkflowChange} />
         )}
         {activeTab === 'security' && (
-          <SecurityVulnerabilities vulnerabilities={vulnerabilities} />
+          <SecurityVulnerabilities />
         )}
       </main>
     </div>

@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const WorkflowRuns = ({ workflowRuns, selectedWorkflow, handleWorkflowChange }) => {
+const WorkflowRuns = ({ selectedWorkflow, handleWorkflowChange }) => {
+  const [workflowRuns, setWorkflowRuns] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?workflow=${selectedWorkflow}`);
+        const data = await response.json();
+        setWorkflowRuns(data);
+      } catch (error) {
+        console.error('Error fetching workflow runs:', error);
+      }
+    };
+
+    fetchData();
+  }, [selectedWorkflow]);
+
   const filteredRuns = selectedWorkflow === 'all' ? workflowRuns : workflowRuns.filter(run => run.workflow === selectedWorkflow);
 
   return (
