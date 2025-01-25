@@ -9,6 +9,7 @@ const SecurityVulnerabilities = () => {
   });
   const [expandedVulns, setExpandedVulns] = useState({});
 
+  // Fetch security vulnerabilities data from the API based on filters
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,6 +25,7 @@ const SecurityVulnerabilities = () => {
     fetchData();
   }, [filters]);
 
+  // Handle filter changes
   const handleFilterChange = (column, value) => {
     setFilters(prevFilters => ({
       ...prevFilters,
@@ -31,6 +33,7 @@ const SecurityVulnerabilities = () => {
     }));
   };
 
+  // Toggle the expanded state of a vulnerability description
   const handleToggleExpand = (repo, vulnNumber) => {
     setExpandedVulns(prevState => ({
       ...prevState,
@@ -38,6 +41,7 @@ const SecurityVulnerabilities = () => {
     }));
   };
 
+  // Filter vulnerabilities based on selected filters
   const filteredVulnerabilities = vulnerabilities
     .map(repo => ({
       ...repo,
