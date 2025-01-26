@@ -1,15 +1,17 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const helmet = require("helmet");
-const NodeCache = require("node-cache");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from 'url';
+import helmet from "helmet";
+import NodeCache from "node-cache";
+import dotenv from "dotenv";
+import GithubService from "./services/githubService.js";
+import WorkflowService from "./services/workflowService.js";
+import VulnerabilityService from "./services/vulnerabilityService.js";
+import createWorkflowRoutes from "./routes/workflows.js";
+import createVulnerabilityRoutes from "./routes/vulnerabilities.js";
 
-const GithubService = require("./services/githubService");
-const WorkflowService = require("./services/workflowService");
-const VulnerabilityService = require("./services/vulnerabilityService");
-const createWorkflowRoutes = require("./routes/workflows");
-const createVulnerabilityRoutes = require("./routes/vulnerabilities");
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -26,6 +28,10 @@ const githubService = new GithubService(process.env.ACTIONS_TOKEN, {
     retries: 3,
     timeout: 5000
 });
+
+// Resolve __dirname in ES6 modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function initializeApp() {
     // Initialize GitHub service

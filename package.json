@@ -2,6 +2,7 @@
   "name": "codespaces-react",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@octokit/core": "^6.1.3",
     "@octokit/plugin-retry": "^7.1.3",

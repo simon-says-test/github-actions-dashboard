@@ -1,4 +1,5 @@
-const config = require('../../src/config.js');
+import config from '../../src/config.js';
+
 const genericFailBadgeUrl = "https://img.shields.io/badge/status-fail-red";
 
 class WorkflowService {
@@ -71,6 +72,7 @@ class WorkflowService {
                 latestRun: { id: latestRun.id, status: latestRun.status, conclusion: latestRun.conclusion, testResults }
             };
         } catch (error) {
+            console.error(`Error processing workflow run for ${name}:`, error);
             return this.createErrorWorkflowRun(name, workflow, latestRun, error);
         }
     }
@@ -90,4 +92,4 @@ class WorkflowService {
     }
 }
 
-module.exports = WorkflowService;
+export default WorkflowService;

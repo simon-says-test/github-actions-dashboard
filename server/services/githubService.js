@@ -1,3 +1,7 @@
+import { Octokit } from '@octokit/core';
+import { retry } from '@octokit/plugin-retry';
+import { throttling } from '@octokit/plugin-throttling';
+
 class GithubService {
     constructor(token, options = {}) {
         this.token = token;
@@ -9,18 +13,13 @@ class GithubService {
         this.client = null;
     }
 
-    async initialize() {
+    initialize() {
         if (this.client) return;
 
-        const [{ Octokit }, { retry }, { throttling }] = await Promise.all([
-            import('@octokit/core'),
-            import('@octokit/plugin-retry'),
-            import('@octokit/plugin-throttling')
-        ]);
-
-        const OctokitWithPlugins = Octokit.plugin(retry, throttling);
-        this.client = new OctokitWithPlugins({
+        // Initialize the Octokit client with plugins
+        this.client = new Octokit({
             auth: this.token,
+            plugins: [retry, throttling],
             retry: {
                 enabled: true,
                 retries: this.options.retries
@@ -87,4 +86,4 @@ class GithubService {
     }
 }
 
-module.exports = GithubService;
+export default GithubService;

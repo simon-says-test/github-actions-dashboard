@@ -1,4 +1,3 @@
-
 const config = {
   repos: [
     { owner: 'FoodStandardsAgency', name: 'register-a-food-business-front-end' },
@@ -7,4 +6,4 @@ const config = {
   ]
 };
 
-module.exports = config;
+export default config;

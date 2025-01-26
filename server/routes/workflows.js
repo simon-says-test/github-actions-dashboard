@@ -1,38 +1,30 @@
-const express = require('express');
-const { query, validationResult } = require('express-validator');
-const router = express.Router();
+import express from 'express';
 
 const createWorkflowRoutes = (workflowService, cache, disableCache) => {
-    router.get('/',
-        [query('workflow').isString().trim().escape()],
-        async (req, res) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
-            }
+    const router = express.Router();
 
-            const { workflow } = req.query;
+    router.get('/', async (req, res) => {
+        const { workflow } = req.query;
+
+        try {
             const cacheKey = `workflow-runs-${workflow}`;
-            
-            if (!disableCache) {
-                const cachedData = cache.get(cacheKey);
-                if (cachedData) return res.json(cachedData);
+            if (!disableCache && cache.has(cacheKey)) {
+                return res.json(cache.get(cacheKey));
             }
 
-            try {
-                const workflowRuns = await workflowService.getAllWorkflowRuns(workflow);
-                
-                if (!disableCache) {
-                    cache.set(cacheKey, workflowRuns);
-                }
-                res.json(workflowRuns);
-            } catch (error) {
-                console.error("Error fetching workflow runs:", error);
-                res.status(500).json({ error: "Error fetching workflow runs" });
+            const workflowRuns = await workflowService.getAllWorkflowRuns(workflow);
+            if (!disableCache) {
+                cache.set(cacheKey, workflowRuns);
             }
-        });
+
+            res.json(workflowRuns);
+        } catch (error) {
+            console.error('Error fetching workflow runs:', error);
+            res.status(500).json({ error: 'Failed to fetch workflow runs' });
+        }
+    });
 
     return router;
 };
 
-module.exports = createWorkflowRoutes;
+export default createWorkflowRoutes;
