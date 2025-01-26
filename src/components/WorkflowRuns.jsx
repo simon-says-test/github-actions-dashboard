@@ -2,12 +2,20 @@ import React, { useEffect, useState } from "react";
 
 const WorkflowRuns = ({ selectedWorkflow, handleWorkflowChange }) => {
   const [workflowRuns, setWorkflowRuns] = useState([]);
+  const [filters, setFilters] = useState({
+    repository: 'all',
+    workflow: selectedWorkflow
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const query = new URLSearchParams({
+          ...filters,
+          workflow: selectedWorkflow
+        }).toString();
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?workflow=${selectedWorkflow}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?${query}`
         );
         const data = await response.json();
         setWorkflowRuns(data);
@@ -17,31 +25,49 @@ const WorkflowRuns = ({ selectedWorkflow, handleWorkflowChange }) => {
     };
 
     fetchData();
-  }, [selectedWorkflow]);
+  }, [filters, selectedWorkflow]);
 
-  const filteredRuns =
-    selectedWorkflow === "all" ? workflowRuns : workflowRuns.filter((run) => run.workflow === selectedWorkflow);
+  const handleFilterChange = (column, value) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [column]: value
+    }));
+  };
+
+  const filteredRuns = workflowRuns.filter(run => {
+    if (filters.repository !== 'all' && run.repository !== filters.repository) return false;
+    if (selectedWorkflow !== 'all' && run.workflow !== selectedWorkflow) return false;
+    return true;
+  });
 
   return (
     <div>
       <h2>Workflow Runs Test Results</h2>
-      <label htmlFor="workflow-select">Filter by workflow:</label>
-      <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
-        <option value="all">All</option>
-        {workflowRuns
-          .filter((workflowRun) => {
-            console.log("workflow: " + workflowRun);
-            console.log("latest: " + workflowRun?.latestRun);
-            console.log("test res: " + workflowRun?.latestRun?.testResults);
-            console.log(workflowRun.workflow + " length: " + workflowRun?.latestRun?.testResults?.length);
-            return workflowRun?.latestRun?.testResults?.length > 0;
-          })
-          .map((workflowRun) => (
-            <option key={workflowRun.repository + workflowRun.workflow} value={workflowRun.workflow}>
-              {workflowRun.workflow}
-            </option>
+      <div>
+        <label htmlFor="repository-select">Filter by repository:</label>
+        <select 
+          id="repository-select" 
+          value={filters.repository} 
+          onChange={(e) => handleFilterChange('repository', e.target.value)}
+        >
+          <option value="all">All</option>
+          {[...new Set(workflowRuns.map(run => run.repository))].map(repo => (
+            <option key={repo} value={repo}>{repo}</option>
           ))}
-      </select>
+        </select>
+
+        <label htmlFor="workflow-select">Filter by workflow:</label>
+        <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
+          <option value="all">All</option>
+          {workflowRuns
+            .filter(workflowRun => workflowRun?.latestRun?.testResults?.length > 0)
+            .map((workflowRun) => (
+              <option key={workflowRun.repository + workflowRun.workflow} value={workflowRun.workflow}>
+                {workflowRun.workflow}
+              </option>
+            ))}
+        </select>
+      </div>
       {filteredRuns.length > 0 ? (
         <table className="tableStyle workflowTable">
           <thead>
