@@ -1,6 +1,5 @@
 const express = require('express');
 const { query, validationResult } = require('express-validator');
-const config = require('../../src/config.js');
 const router = express.Router();
 
 const createVulnerabilityRoutes = (vulnerabilityService, cache, disableCache) => {
@@ -17,53 +16,23 @@ const createVulnerabilityRoutes = (vulnerabilityService, cache, disableCache) =>
             }
 
             const { severity, status, repository } = req.query;
-            console.log("Fetching security vulnerabilities");
-
             const cacheKey = `security-vulnerabilities-${severity}-${status}-${repository}`;
+            
             if (!disableCache) {
                 const cachedData = cache.get(cacheKey);
                 if (cachedData) return res.json(cachedData);
             }
 
             try {
-                const vulnerabilities = await Promise.all(
-                    config.repos.map(async ({ owner, name }) => {
-                        if (repository !== "all" && name !== repository) return null;
-
-                        try {
-                            const response = await vulnerabilityService.githubService
-                                .getSecurityVulnerabilities(owner, name);
-                            
-                            const filteredVulnerabilities = vulnerabilityService
-                                .processVulnerabilities(response.data, severity, status);
-
-                            if (filteredVulnerabilities.length === 0) {
-                                return vulnerabilityService
-                                    .createEmptyVulnerabilityResult(name, "No vulnerabilities found");
-                            }
-
-                            return {
-                                repository: name,
-                                vulnerabilities: filteredVulnerabilities
-                            };
-                        } catch (error) {
-                            return vulnerabilityService
-                                .createEmptyVulnerabilityResult(
-                                    name, 
-                                    `Error fetching vulnerabilities: ${error.message}`
-                                );
-                        }
-                    })
-                );
-
-                const filteredVulnerabilities = vulnerabilities.filter(Boolean);
+                const vulnerabilities = await vulnerabilityService
+                    .getAllVulnerabilities(severity, status, repository);
+                
                 if (!disableCache) {
-                    cache.set(cacheKey, filteredVulnerabilities);
+                    cache.set(cacheKey, vulnerabilities);
                 }
-                res.json(filteredVulnerabilities);
+                res.json(vulnerabilities);
             } catch (error) {
-                console.error("Error fetching security vulnerabilities:", 
-                    error.response ? error.response.data : error.message);
+                console.error("Error fetching vulnerabilities:", error);
                 res.status(500).json({ error: "Error fetching security vulnerabilities" });
             }
         });

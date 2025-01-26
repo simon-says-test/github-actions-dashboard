@@ -22,20 +22,35 @@ app.use(helmet());
 // Services setup
 const cache = new NodeCache({ stdTTL: 600 });
 const disableCache = process.env.NODE_ENV === "development";
-const githubService = new GithubService(process.env.ACTIONS_TOKEN);
-const workflowService = new WorkflowService(githubService);
-const vulnerabilityService = new VulnerabilityService(githubService);
-
-// Routes
-app.use('/api/workflow-runs', createWorkflowRoutes(workflowService, cache, disableCache));
-app.use('/api/security-vulnerabilities', createVulnerabilityRoutes(vulnerabilityService, cache, disableCache));
-
-// Static files
-app.use(express.static(path.join(__dirname, "../build")));
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../build", "index.html"));
+const githubService = new GithubService(process.env.ACTIONS_TOKEN, {
+    retries: 3,
+    timeout: 5000
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+async function initializeApp() {
+    // Initialize GitHub service
+    await githubService.initialize();
+    
+    const workflowService = new WorkflowService(githubService);
+    const vulnerabilityService = new VulnerabilityService(githubService);
+
+    // Routes
+    app.use('/api/workflow-runs', createWorkflowRoutes(workflowService, cache, disableCache));
+    app.use('/api/security-vulnerabilities', createVulnerabilityRoutes(vulnerabilityService, cache, disableCache));
+
+    // Static files
+    app.use(express.static(path.join(__dirname, "../build")));
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../build", "index.html"));
+    });
+
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
+
+// Start the application
+initializeApp().catch(error => {
+    console.error('Failed to initialize app:', error);
+    process.exit(1);
 });
