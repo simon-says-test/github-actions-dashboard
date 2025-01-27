@@ -1,44 +1,45 @@
 import React, { useEffect, useState } from "react";
 
-const WorkflowRuns = ({ selectedWorkflow, handleWorkflowChange }) => {
+const WorkflowRuns = ({ config }) => {
+  const [selectedRepo, setSelectedRepo] = useState('all');
+  const [selectedWorkflow, setSelectedWorkflow] = useState('all');
   const [workflowRuns, setWorkflowRuns] = useState([]);
-  const [filters, setFilters] = useState({
-    repository: 'all',
-    workflow: selectedWorkflow
-  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const query = new URLSearchParams({
-          ...filters,
-          workflow: selectedWorkflow
-        }).toString();
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?${query}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/workflow-runs?owner=${selectedRepo.owner}&repo=${selectedRepo.name}`
         );
         const data = await response.json();
         setWorkflowRuns(data);
       } catch (error) {
-        console.error("Error fetching workflow runs:", error);
+        console.error("Error fetching workflow runs: ", error);
       }
     };
 
-    fetchData();
-  }, [filters, selectedWorkflow]);
+    if (selectedRepo !== 'all') {
+      fetchData();
+    }
+  }, [selectedRepo]);
 
-  const handleFilterChange = (column, value) => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [column]: value
-    }));
+  const handleRepositoryChange = (value) => {
+    const repo = config.repos.find(repo => repo.name === value);
+    setSelectedRepo(repo || 'all');
+    setSelectedWorkflow('all');
+  };
+
+  const handleWorkflowChange = (event) => {
+    setSelectedWorkflow(event.target.value);
   };
 
   const filteredRuns = workflowRuns.filter(run => {
-    if (filters.repository !== 'all' && run.repository !== filters.repository) return false;
+    if (selectedRepo !== 'all' && run.repository !== selectedRepo.name) return false;
     if (selectedWorkflow !== 'all' && run.workflow !== selectedWorkflow) return false;
     return true;
   });
+
+  console.log("Filtered workflow runs:", filteredRuns); // Debug log
 
   return (
     <div>
@@ -47,28 +48,33 @@ const WorkflowRuns = ({ selectedWorkflow, handleWorkflowChange }) => {
         <label htmlFor="repository-select">Filter by repository:</label>
         <select 
           id="repository-select" 
-          value={filters.repository} 
-          onChange={(e) => handleFilterChange('repository', e.target.value)}
+          value={selectedRepo.name || 'all'} 
+          onChange={(e) => handleRepositoryChange(e.target.value)}
         >
-          <option value="all">All</option>
-          {[...new Set(workflowRuns.map(run => run.repository))].map(repo => (
-            <option key={repo} value={repo}>{repo}</option>
+          <option value="all">Select a repository</option>
+          {config.repos.map(repo => (
+            <option key={repo.name} value={repo.name}>{repo.owner}/{repo.name}</option>
           ))}
         </select>
 
-        <label htmlFor="workflow-select">Filter by workflow:</label>
-        <select id="workflow-select" value={selectedWorkflow} onChange={handleWorkflowChange}>
-          <option value="all">All</option>
-          {workflowRuns
-            .filter(workflowRun => workflowRun?.latestRun?.testResults?.length > 0)
-            .map((workflowRun) => (
-              <option key={workflowRun.repository + workflowRun.workflow} value={workflowRun.workflow}>
-                {workflowRun.workflow}
-              </option>
-            ))}
-        </select>
+        {selectedRepo !== 'all' && (
+          <>
+            <label htmlFor="workflow-select">Filter by workflow:</label>
+            <select 
+              id="workflow-select" 
+              value={selectedWorkflow} 
+              onChange={handleWorkflowChange}
+            >
+              <option value="all">All</option>
+              {availableWorkflows.map((workflow) => (
+                <option key={workflow} value={workflow}>{workflow}</option>
+              ))}
+            </select>
+          </>
+        )}
       </div>
-      {filteredRuns.length > 0 ? (
+
+      {selectedRepo !== 'all' && filteredRuns.length > 0 ? (
         <table className="tableStyle workflowTable">
           <thead>
             <tr>
@@ -110,7 +116,7 @@ const WorkflowRuns = ({ selectedWorkflow, handleWorkflowChange }) => {
           </tbody>
         </table>
       ) : (
-        <p>Loading...</p>
+        selectedRepo !== 'all' && <p>Loading...</p>
       )}
     </div>
   );

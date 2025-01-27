@@ -1,7 +1,5 @@
 import config from '../../src/config.js';
 
-const genericFailBadgeUrl = "https://img.shields.io/badge/status-fail-red";
-
 class WorkflowService {
     constructor(githubService) {
         this.githubService = githubService;
