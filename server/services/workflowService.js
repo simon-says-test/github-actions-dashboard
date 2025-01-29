@@ -1,20 +1,9 @@
 import config from '../../src/config.js';
 
-const genericFailBadgeUrl = "https://img.shields.io/badge/status-fail-red";
-
 class WorkflowService {
     constructor(githubService) {
         this.githubService = githubService;
         this.genericFailBadgeUrl = "https://img.shields.io/badge/status-fail-red";
-    }
-
-    async getAllWorkflowRuns(workflowName) {
-        const workflowRuns = await Promise.all(
-            config.repos.map(({ owner, name }) => 
-                this.getRepoWorkflows(owner, name, workflowName)
-            )
-        );
-        return workflowRuns.flat();
     }
 
     async getRepoWorkflows(owner, name, workflowName) {
@@ -27,9 +16,11 @@ class WorkflowService {
                 return [this.createEmptyWorkflowRun(name)];
             }
 
-            return Promise.all(
+            const workflowRuns = await Promise.all(
                 workflows.map(workflow => this.processWorkflowRun(owner, name, workflow))
             );
+
+            return workflowRuns.filter(run => run.latestRun && run.latestRun.testResults.length > 0);
         } catch (error) {
             console.error(`Error fetching workflows for ${name}:`, error);
             return [this.createEmptyWorkflowRun(name, `Error: ${error.message}`)];

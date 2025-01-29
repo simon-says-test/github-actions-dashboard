@@ -4,15 +4,15 @@ const createWorkflowRoutes = (workflowService, cache, disableCache) => {
     const router = express.Router();
 
     router.get('/', async (req, res) => {
-        const { workflow } = req.query;
+        const { workflow, owner, repo } = req.query;
 
         try {
-            const cacheKey = `workflow-runs-${workflow}`;
+            const cacheKey = `workflow-runs-${owner}-${repo}-${workflow}`;
             if (!disableCache && cache.has(cacheKey)) {
                 return res.json(cache.get(cacheKey));
             }
 
-            const workflowRuns = await workflowService.getAllWorkflowRuns(workflow);
+            const workflowRuns = await workflowService.getRepoWorkflows(owner, repo, workflow);
             if (!disableCache) {
                 cache.set(cacheKey, workflowRuns);
             }

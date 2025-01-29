@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import WorkflowRuns from './components/WorkflowRuns';
 import SecurityVulnerabilities from './components/SecurityVulnerabilities';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('workflows');
-  const [selectedWorkflow, setSelectedWorkflow] = useState('all');
+  const [config, setConfig] = useState(null);
 
-  const handleWorkflowChange = (event) => {
-    setSelectedWorkflow(event.target.value);
-  };
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/config`);
+        const data = await response.json();
+        setConfig(data);
+      } catch (error) {
+        console.error('Error fetching config:', error);
+      }
+    };
+
+    fetchConfig();
+  }, []);
+
+  if (!config) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="App">
@@ -23,10 +37,10 @@ const App = () => {
           <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>Security</button>
         </div>
         {activeTab === 'workflows' && (
-          <WorkflowRuns selectedWorkflow={selectedWorkflow} handleWorkflowChange={handleWorkflowChange} />
+          <WorkflowRuns config={config} />
         )}
         {activeTab === 'security' && (
-          <SecurityVulnerabilities />
+          <SecurityVulnerabilities config={config} />
         )}
       </main>
     </div>
