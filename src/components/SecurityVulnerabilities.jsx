@@ -1,115 +1,137 @@
 import React, { useEffect, useState } from 'react';
 
 const SecurityVulnerabilities = ({ config }) => {
+  const sortedRepos = [...config.repos].sort((a, b) => {
+    if (a.owner !== b.owner) return a.owner.localeCompare(b.owner);
+    return a.name.localeCompare(b.name);
+  });
+
+  const [selectedRepo, setSelectedRepo] = useState(sortedRepos[0]);
   const [vulnerabilities, setVulnerabilities] = useState([]);
-  const [selectedRepo, setSelectedRepo] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState({
     severity: 'all',
-    status: 'all'
+    status: 'open'  // Default to "open" as per requirements
   });
+  const [availableSeverities, setAvailableSeverities] = useState([]);
   const [expandedVulns, setExpandedVulns] = useState({});
+
+  // Constant status options as per requirements
+  const statusOptions = ['all', 'open', 'fixed'];
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+      setVulnerabilities([]);
+      
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/security-vulnerabilities?owner=${selectedRepo.owner}&repo=${selectedRepo.name}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/security-vulnerabilities?` +
+          `owner=${selectedRepo.owner}&` +
+          `repo=${selectedRepo.name}&` +
+          `severity=${filters.severity}&` +
+          `status=${filters.status}`
         );
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
-        console.log("Fetched vulnerabilities:", data); // Debug log
+        console.log('Fetched vulnerabilities:', data); // Debug log
+        
+        // Extract unique severities from actual vulnerability data
+        const severities = [...new Set(
+          data.flatMap(repo => 
+            repo.vulnerabilities
+              .filter(v => v.security_vulnerability?.severity)
+              .map(v => v.security_vulnerability.severity)
+          )
+        )].sort();
+
+        setAvailableSeverities(severities);
         setVulnerabilities(data);
       } catch (error) {
         console.error('Error fetching security vulnerabilities:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    if (selectedRepo !== 'all') {
-      fetchData();
-    }
-  }, [selectedRepo]);
+    fetchData();
+  }, [selectedRepo, filters.severity, filters.status]);
 
-  const handleFilterChange = (column, value) => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [column]: value
-    }));
+  const handleRepositoryChange = (event) => {
+    const [owner, name] = event.target.value.split('/');
+    const repo = sortedRepos.find(r => r.owner === owner && r.name === name);
+    setSelectedRepo(repo);
+    setFilters({ severity: 'all', status: 'open' }); // Reset to default filters
   };
 
-  const handleRepositoryChange = (value) => {
-    const repo = config.repos.find(repo => repo.name === value);
-    setSelectedRepo(repo || 'all');
-    setFilters({ severity: 'all', status: 'all' });
-  };
-
-  const handleToggleExpand = (repo, vulnNumber) => {
-    setExpandedVulns(prevState => ({
-      ...prevState,
-      [`${repo}-${vulnNumber}`]: !prevState[`${repo}-${vulnNumber}`]
-    }));
-  };
-
+  // Updated filtering logic
   const filteredVulnerabilities = vulnerabilities
-    .filter(repo => selectedRepo === 'all' || repo.repository === selectedRepo.name)
     .map(repo => ({
       ...repo,
       vulnerabilities: repo.vulnerabilities.filter(vuln => {
-        if (filters.severity !== 'all' && vuln.security_vulnerability.severity !== filters.severity) return false;
-        if (filters.status !== 'all') {
-          if (filters.status === 'fixed' && !vuln.fixed_at) return false;
-          if (filters.status === 'unfixed' && vuln.fixed_at) return false;
-        }
+        if (filters.severity !== 'all' && 
+            vuln.security_vulnerability?.severity !== filters.severity) return false;
+        if (filters.status === 'open' && vuln.fixed_at) return false;
+        if (filters.status === 'fixed' && !vuln.fixed_at) return false;
         return true;
       })
     }))
     .filter(repo => repo.vulnerabilities.length > 0);
 
-  console.log("Filtered vulnerabilities:", filteredVulnerabilities); // Debug log
-
   return (
     <div>
       <h2>Security Vulnerabilities</h2>
-      <div>
-        <label htmlFor="repository-select">Filter by repository:</label>
+      <div className="filters">
+        <label htmlFor="repository-select">Repository:</label>
         <select 
           id="repository-select" 
-          value={selectedRepo.name || 'all'} 
-          onChange={(e) => handleRepositoryChange(e.target.value)}
+          value={`${selectedRepo.owner}/${selectedRepo.name}`}
+          onChange={handleRepositoryChange}
         >
-          <option value="all">Select a repository</option>
-          {config.repos.map(repo => (
-            <option key={repo.name} value={repo.name}>{repo.owner}/{repo.name}</option>
+          {sortedRepos.map(repo => (
+            <option key={`${repo.owner}/${repo.name}`} value={`${repo.owner}/${repo.name}`}>
+              {repo.owner}/{repo.name}
+            </option>
           ))}
         </select>
 
-        {selectedRepo !== 'all' && (
-          <>
-            <label htmlFor="severity-select">Filter by severity:</label>
-            <select 
-              id="severity-select" 
-              value={filters.severity} 
-              onChange={(e) => handleFilterChange('severity', e.target.value)}
-            >
-              <option value="all">All</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
+        <label htmlFor="severity-select">Severity:</label>
+        <select 
+          id="severity-select" 
+          value={filters.severity}
+          onChange={(e) => setFilters(prev => ({ ...prev, severity: e.target.value }))}
+        >
+          <option value="all">All</option>
+          {availableSeverities.length > 0 ? (
+            availableSeverities.map(severity => (
+              <option key={severity} value={severity}>{severity}</option>
+            ))
+          ) : (
+            <option value="none" disabled>None found</option>
+          )}
+        </select>
 
-            <label htmlFor="status-select">Filter by status:</label>
-            <select 
-              id="status-select" 
-              value={filters.status} 
-              onChange={(e) => handleFilterChange('status', e.target.value)}
-            >
-              <option value="all">All</option>
-              <option value="fixed">Fixed</option>
-              <option value="unfixed">Unfixed</option>
-            </select>
-          </>
-        )}
+        <label htmlFor="status-select">Status:</label>
+        <select 
+          id="status-select" 
+          value={filters.status}
+          onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+        >
+          {statusOptions.map(status => (
+            <option key={status} value={status}>
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {selectedRepo !== 'all' && filteredVulnerabilities.length > 0 ? (
+      {isLoading ? (
+        <p>Loading vulnerability data...</p>
+      ) : filteredVulnerabilities.length > 0 ? (
         <table className="tableStyle securityTable">
           <thead>
             <tr>
@@ -151,7 +173,7 @@ const SecurityVulnerabilities = ({ config }) => {
           </tbody>
         </table>
       ) : (
-        selectedRepo !== 'all' && <p>Loading...</p>
+        <p>No matching vulnerabilities found</p>
       )}
     </div>
   );
