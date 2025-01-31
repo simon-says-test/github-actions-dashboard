@@ -5,6 +5,7 @@ class WorkflowService {
         this.githubService = githubService;
         this.genericFailBadgeUrl = "https://img.shields.io/badge/status-fail-red";
         this.genericSuccessBadgeUrl = "https://img.shields.io/badge/status-success-green";
+        this.notFoundBadgeUrl = "https://img.shields.io/badge/404-Not%20Found-blue";
     }
 
     async getWorkflowNames(owner, name) {
@@ -23,39 +24,27 @@ class WorkflowService {
         }
     }
 
-    async getWorkflows(owner, name, workflowId) {
+    async getWorkflows(owner, repository, workflowId) {
         try {
-            const workflowsRunsResponse = await this.githubService.getWorkflowRuns(owner, name, workflowId);
+            const workflowsRunsResponse = await this.githubService.getWorkflowRuns(owner, repository, workflowId);
             const workflows = workflowsRunsResponse.data.workflow_runs;
 
             if (workflows.length === 0) {
-                return [this.createEmptyWorkflowRun(name)];
+                return [this.createErrorWorkflowRun(repository, { name: "Error" }, "No workflow runs found")];
             }
 
             const workflowRuns = await Promise.all(
-                workflows.map(workflow => this.processWorkflowRun(owner, name, workflow))
+                workflows.map(workflow => this.getWorkflowRunDetails(owner, repository, workflow))
             );
 
             return workflowRuns.filter(run => run.testResults.length > 0);
         } catch (error) {
-            console.error(`Error fetching workflows for ${name}:`, error);
-            return [this.createEmptyWorkflowRun(name, `Error: ${error.message}`)];
+            console.error(`Error fetching workflows for ${repository}:`, error);
+            return [this.createErrorWorkflowRun(repository, { name: "Error" }, error.message)];
         }
     }
 
-    createEmptyWorkflowRun(name, message = "No workflows") {
-        return {
-            repository: name,
-            workflow: "Error",
-            badge_url: this.genericFailBadgeUrl,
-            testResults: [{ 
-                name: "Error", 
-                summary: message 
-            }]
-        };
-    }
-
-    async processWorkflowRun(owner, name, run) {
+    async getWorkflowRunDetails(owner, name, run) {
         try {
             const checkRunsResponse = await this.githubService.getCheckRuns(owner, name, run.head_sha);
             const testResults = checkRunsResponse.data.check_runs.map(checkRun => ({
@@ -72,20 +61,20 @@ class WorkflowService {
             };
         } catch (error) {
             console.error(`Error processing workflow run for ${name}:`, error);
-            return this.createErrorWorkflowRun(name, workflow, latestRun, error);
+            return this.createErrorWorkflowRun(name, workflow, error.message);
         }
     }
 
-    createErrorWorkflowRun(name, workflow, latestRun, error) {
+    createErrorWorkflowRun(name, workflow, error) {
         return {
             repository: name,
             workflow: workflow.name,
-            badge_url: this.genericFailBadgeUrl,
+            badge_url: this.notFoundBadgeUrl,
             status: "error",
             conclusion: "failed",
             testResults: [{ 
                 name: "N/A", 
-                summary: `Error fetching check runs: ${error.message}` 
+                summary: `Error fetching workflow runs: ${error}` 
             }]
         };
     }

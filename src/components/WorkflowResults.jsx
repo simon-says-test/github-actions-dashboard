@@ -42,7 +42,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
         <thead>
           <tr>
             <th>Repository</th>
-            <th>Workflow</th>
+            <th>Stage</th>
             <th>Status</th>
             <th>Test Results</th>
           </tr>
@@ -54,7 +54,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
               .map((test, testIndex) => (
                 <tr key={`${run.repository}-${run.workflow}-${index}-${testIndex}`}>
                   <td>{run.repository}</td>
-                  <td>{run.workflow}</td>
+                  <td>{test.name}</td>
                   <td>
                     <img src={run.badge_url} alt={`${run.workflow} status`} />
                   </td>
