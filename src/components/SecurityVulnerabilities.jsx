@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const SecurityVulnerabilities = ({ config }) => {
-  const sortedRepos = [...config.repos].sort((a, b) => {
-    if (a.owner !== b.owner) return a.owner.localeCompare(b.owner);
-    return a.name.localeCompare(b.name);
-  });
-
-  const [selectedRepo, setSelectedRepo] = useState(sortedRepos[0]);
+const SecurityVulnerabilities = ({ selectedRepo }) => {
   const [vulnerabilities, setVulnerabilities] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -61,13 +55,6 @@ const SecurityVulnerabilities = ({ config }) => {
     fetchData();
   }, [selectedRepo, filters.severity, filters.status]);
 
-  const handleRepositoryChange = (event) => {
-    const [owner, name] = event.target.value.split('/');
-    const repo = sortedRepos.find(r => r.owner === owner && r.name === name);
-    setSelectedRepo(repo);
-    setFilters({ severity: 'all', status: 'open' }); // Reset to default filters
-  };
-
   // Updated filtering logic
   const filteredVulnerabilities = vulnerabilities
     .map(repo => ({
@@ -86,19 +73,6 @@ const SecurityVulnerabilities = ({ config }) => {
     <div>
       <h2>Security Vulnerabilities</h2>
       <div className="filters">
-        <label htmlFor="repository-select">Repository:</label>
-        <select 
-          id="repository-select" 
-          value={`${selectedRepo.owner}/${selectedRepo.name}`}
-          onChange={handleRepositoryChange}
-        >
-          {sortedRepos.map(repo => (
-            <option key={`${repo.owner}/${repo.name}`} value={`${repo.owner}/${repo.name}`}>
-              {repo.owner}/{repo.name}
-            </option>
-          ))}
-        </select>
-
         <label htmlFor="severity-select">Severity:</label>
         <select 
           id="severity-select" 

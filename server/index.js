@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(helmet());
 
 // Services setup
-const cache = new NodeCache({ stdTTL: 600 });
+const cache = new NodeCache({ stdTTL: 300 });
 const disableCache = process.env.NODE_ENV === "development";
 const githubService = new GithubService(process.env.ACTIONS_TOKEN, {
   retries: 3,
@@ -42,7 +42,7 @@ async function initializeApp() {
   const vulnerabilityService = new VulnerabilityService(githubService);
 
   // Routes
-  app.use("/api/workflow-runs", createWorkflowRoutes(workflowService, cache, disableCache));
+  app.use("/api/workflows", createWorkflowRoutes(workflowService, cache, disableCache));
   app.use("/api/security-vulnerabilities", createVulnerabilityRoutes(vulnerabilityService, cache, disableCache));
   app.use("/api/config", createConfigRoutes());
 
