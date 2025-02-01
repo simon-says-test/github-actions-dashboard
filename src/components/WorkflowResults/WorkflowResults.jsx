@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../../services/api';
-import styles from './WorkflowResults.module.css'; // added CSS module import
+import styles from './WorkflowResults.module.css';
 
-const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
+const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [workflowRuns, setWorkflowRuns] = useState([]);
 
@@ -10,12 +10,8 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
     const fetchWorkflowRuns = async () => {
       setIsLoading(true);
       try {
-        if (mockData) {
-          setWorkflowRuns(mockData);
-        } else {
-          const data = await apiService.fetchWorkflowRuns(selectedRepo.owner, selectedRepo.name, selectedWorkflow);
-          setWorkflowRuns(data);
-        }
+        const data = await apiService.fetchWorkflowRuns(selectedRepo.owner, selectedRepo.name, selectedWorkflow);
+        setWorkflowRuns(data);
       } catch (error) {
         console.error('Error fetching workflow runs:', error);
         setWorkflowRuns([]);
@@ -27,7 +23,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
     if (selectedWorkflow !== 'all') {
       fetchWorkflowRuns();
     }
-  }, [selectedRepo, selectedWorkflow, mockData]);
+  }, [selectedRepo, selectedWorkflow]);
 
   if (isLoading) {
     return <p>Loading workflow data...</p>;

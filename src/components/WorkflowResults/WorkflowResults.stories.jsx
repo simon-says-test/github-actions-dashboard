@@ -1,31 +1,14 @@
 import React from 'react';
 import WorkflowResults from './WorkflowResults';
-
-const meta = {
-  title: 'Components/WorkflowResults',
-  component: WorkflowResults,
-  parameters: {
-    layout: 'padded',
-  },
-  decorators: [
-    Story => {
-      window.STORYBOOK_ENV = true;
-      return <Story />;
-    },
-  ],
-  tags: ['autodocs'],
-};
-
-export default meta;
+import { apiService } from '../../services/api';
 
 const mockRepo = {
   owner: 'testowner',
   name: 'testrepo',
 };
 
-const Template = args => <WorkflowResults {...args} />;
-
-const mockData = {
+// Mock data moved to mock implementations
+const mockWorkflowData = {
   simple: [
     {
       repository: 'testrepo',
@@ -81,6 +64,52 @@ const mockData = {
   ],
 };
 
+// Store original implementation
+const originalFetchWorkflowRuns = apiService.fetchWorkflowRuns;
+
+const meta = {
+  title: 'Components/WorkflowResults',
+  component: WorkflowResults,
+  parameters: {
+    layout: 'padded',
+  },
+  decorators: [
+    Story => {
+      // Simple mock replacement
+      apiService.fetchWorkflowRuns = async (owner, repo, workflow) => {
+        if (workflow === 'non-existent-workflow') {
+          return [];
+        }
+        if (repo === 'all') {
+          return mockWorkflowData.multiple;
+        }
+        return mockWorkflowData.simple;
+      };
+
+      // Cleanup after story
+      return (
+        <React.Fragment>
+          <Story />
+          {React.useEffect(() => {
+            return () => {
+              apiService.fetchWorkflowRuns = originalFetchWorkflowRuns;
+            };
+          }, [])}
+        </React.Fragment>
+      );
+    },
+  ],
+  args: {
+    selectedRepo: mockRepo,
+    selectedWorkflow: 'test-workflow',
+  },
+  tags: ['autodocs'],
+};
+
+export default meta;
+
+const Template = args => <WorkflowResults {...args} />;
+
 export const Loading = Template.bind({});
 Loading.args = {
   selectedRepo: mockRepo,
@@ -91,14 +120,12 @@ export const WithData = Template.bind({});
 WithData.args = {
   selectedRepo: mockRepo,
   selectedWorkflow: 'test-workflow',
-  mockData: mockData.simple,
 };
 
 export const MultipleRepos = Template.bind({});
 MultipleRepos.args = {
   selectedRepo: { owner: 'testowner', name: 'all' },
   selectedWorkflow: 'ci-pipeline',
-  mockData: mockData.multiple,
 };
 
 export const NoResults = Template.bind({});
