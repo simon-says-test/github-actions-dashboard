@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 const SecurityResults = ({ selectedRepo, filters }) => {
   const [vulnerabilities, setVulnerabilities] = useState([]);
@@ -9,14 +10,12 @@ const SecurityResults = ({ selectedRepo, filters }) => {
     const fetchVulnerabilities = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/security-vulnerabilities?` +
-            `owner=${selectedRepo.owner}&` +
-            `repo=${selectedRepo.name}&` +
-            `severity=${filters.severity}&` +
-            `status=${filters.status}`
+        const data = await apiService.fetchVulnerabilities(
+          selectedRepo.owner,
+          selectedRepo.name,
+          filters.severity,
+          filters.status
         );
-        const data = await response.json();
         setVulnerabilities(data.vulnerabilities || []);
       } catch (error) {
         console.error('Error fetching vulnerabilities:', error);

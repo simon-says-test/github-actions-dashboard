@@ -4,6 +4,7 @@ import './App.css';
 import RepositorySelect from './components/RepositorySelect';
 import WorkflowRuns from './components/WorkflowRuns';
 import SecurityVulnerabilities from './components/SecurityVulnerabilities';
+import { apiService } from './services/api';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('workflows');
@@ -13,9 +14,7 @@ const App = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        // Get repository configuration
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/config`);
-        const data = await response.json();
+        const data = await apiService.fetchConfig();
         setConfig(data);
 
         // Set initial repository

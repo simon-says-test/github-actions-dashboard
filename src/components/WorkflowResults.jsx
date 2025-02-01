@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { apiService } from '../services/api';
 
 const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -8,13 +9,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
     const fetchWorkflowRuns = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/workflows/runs?` +
-            `owner=${selectedRepo.owner}&` +
-            `repo=${selectedRepo.name}&` +
-            `workflow=${selectedWorkflow}`
-        );
-        const data = await response.json();
+        const data = await apiService.fetchWorkflowRuns(selectedRepo.owner, selectedRepo.name, selectedWorkflow);
         setWorkflowRuns(data);
       } catch (error) {
         console.error('Error fetching workflow runs:', error);

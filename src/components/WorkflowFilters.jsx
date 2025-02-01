@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { apiService } from '../services/api';
 
 const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
   const [workflows, setWorkflows] = useState([]);
@@ -9,11 +10,7 @@ const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
     const fetchWorkflows = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/workflows/names?` +
-            `owner=${selectedRepo.owner}&repo=${selectedRepo.name}`
-        );
-        const data = await response.json();
+        const data = await apiService.fetchWorkflows(selectedRepo.owner, selectedRepo.name);
         setWorkflows(data);
 
         // Set first workflow as default if available
