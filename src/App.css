@@ -128,12 +128,8 @@ pre {
   max-width: 100%;
 }
 
-.securityTable th:nth-child(1), .securityTable td:nth-child(1) {
-  width: 18%; /* Repository column width */
-}
-
-.securityTable th:nth-child(2), .securityTable td:nth-child(2) {
-  width: 50%; /* Vulnerability column width */
+.securityTable th:nth-child(3), .securityTable td:nth-child(2) {
+  width: 40%; /* Vulnerability column width */
 }
 
 .securityTable th, .securityTable td {

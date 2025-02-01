@@ -18,7 +18,7 @@ const createVulnerabilityRoutes = (vulnerabilityService, cache, disableCache) =>
                 cache.set(cacheKey, vulnerabilities);
             }
 
-            res.json([vulnerabilities]); // Wrap in array to match expected format
+            res.json(vulnerabilities);
         } catch (error) {
             console.error('Error fetching vulnerabilities:', error);
             res.status(500).json({ error: 'Failed to fetch vulnerabilities' });

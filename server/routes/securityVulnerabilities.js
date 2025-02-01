@@ -4,7 +4,7 @@ const createSecurityVulnerabilitiesRoutes = (vulnerabilityService, cache, disabl
     const router = express.Router();
 
     router.get('/', async (req, res) => {
-        const { severity, status, owner, repo } = req.query;
+        const { severity = 'All', status = 'Open', owner, repo } = req.query;
 
         try {
             const cacheKey = `security-vulnerabilities-${owner}-${repo}-${severity}-${status}`;
@@ -12,7 +12,13 @@ const createSecurityVulnerabilitiesRoutes = (vulnerabilityService, cache, disabl
                 return res.json(cache.get(cacheKey));
             }
 
-            const vulnerabilities = await vulnerabilityService.getRepoVulnerabilities(owner, repo, severity, status);
+            const vulnerabilities = await vulnerabilityService.getRepoVulnerabilities(
+                owner,
+                repo,
+                severity,
+                status
+            );
+            
             if (!disableCache) {
                 cache.set(cacheKey, vulnerabilities);
             }

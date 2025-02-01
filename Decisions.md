@@ -25,21 +25,34 @@
 - default value is the first owner/repository in the list
 
 ### Severity filter:
-- populated from the severity of vulnerabilities in the selected repository
-- default value is "All" which doesn't filter the list
-- if the repository has no vulnerabilities, display "none found"
-- updates when selected repository changes
+- populated with the following list:
+    - "Critical"
+    - "High"
+    - "Medium"
+    - "Low"
+    - "All"
+- default value is "All"
+- doesn't update once set
 
 ### Status filter:
-- populated from the status of vulnerabilities in the selected repository
-- Additional "All" value which doesn't filter the list
-- default value is "Open" which only includes records for unfixed vulnerabilities
-- if the repository has no vulnerabilities, display "none found"
-- updates when selected repository changes
+- populated with the following list:
+    - "Triage"
+    - "Draft"
+    - "Published"
+    - "Closed"
+    - "Open"
+    - "All"
+- default value is "Open" 
+- doesn't update once set
 
 ### Vulnerability records:
 - populated from the vulnerabilities of the selected repository
 - only vulnerabilities that match the severity and status filter are included in the list
+- the severity filter must be applied in the API on the records returned from GitHub
+- The status filter can be used when querying GitHub using the state field
+- a severity filter value of "All" means no filter is applied for this value 
+- a status filter value of "Open" excludes records for closed vulnerabilities in the results
+- a status filter value of "All" means no filter is applied for this value 
 - if there are no matching vulnerability records then display "none found"
 - updates when selected repository changes
 - updates when selected severity changes

@@ -59,29 +59,44 @@ class GithubService {
         }
     }
 
-    async getWorkflows(owner, name) {
+    async getWorkflows(owner, repo) {
         return this.request('GET /repos/{owner}/{repo}/actions/workflows', {
-            owner, repo: name
+            owner, repo
         });
     }
 
-    async getWorkflowRuns(owner, name, workflowId) {
+    async getWorkflowRuns(owner, repo, workflowId) {
         const response = await this.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs', {
-            owner, repo: name, workflow_id: workflowId, per_page: 1
+            owner, repo, workflow_id: workflowId, per_page: 1
         });
         return { data: { workflow_runs: response.data.workflow_runs } };
     }
 
-    async getCheckRuns(owner, name, commitSha) {
+    async getCheckRuns(owner, repo, commitSha) {
         const response = await this.request('GET /repos/{owner}/{repo}/commits/{ref}/check-runs', {
-            owner, repo: name, ref: commitSha
+            owner, repo, ref: commitSha
         });
         return { data: { check_runs: response.data.check_runs } };
     }
 
-    async getSecurityVulnerabilities(owner, name) {
+    async getAllSecurityVulnerabilities(owner, repo) {
         return this.request('GET /repos/{owner}/{repo}/dependabot/alerts', {
-            owner, repo: name
+            owner, repo
+        });
+    }
+
+    async getSecurityVulnerabilities(owner, repo, state) {
+        const endpoint = state 
+            ? `/repos/${owner}/${repo}/dependabot/alerts?state=${state}`
+            : `/repos/${owner}/${repo}/dependabot/alerts`;
+
+        return this.request(`GET ${endpoint}`, {
+            owner,
+            repo,
+            per_page: 100,
+            headers: {
+                accept: 'application/vnd.github.v3+json'
+            }
         });
     }
 }
