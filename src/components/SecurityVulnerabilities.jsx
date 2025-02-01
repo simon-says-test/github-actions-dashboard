@@ -11,7 +11,6 @@ const SecurityVulnerabilities = ({ selectedRepo }) => {
 
   return (
     <div className="security-vulnerabilities">
-      <h2>Security Vulnerabilities</h2>
       <SecurityFilters onFilterChange={setFilters} />
       <SecurityResults selectedRepo={selectedRepo} filters={filters} />
     </div>

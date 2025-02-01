@@ -7,7 +7,7 @@ const RepositorySelect = ({ repos, selectedRepo, onRepoChange }) => {
   });
 
   return (
-    <div className="repository-select">
+    <div className="repository-select filter-group">
       <label htmlFor="repo-select">Repository:</label>
       <select
         id="repo-select"

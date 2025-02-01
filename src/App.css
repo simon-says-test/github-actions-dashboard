@@ -1,16 +1,6 @@
+/* App-specific styles */
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-logo-small {
-  height: 30px;
-  pointer-events: none;
-  margin-left: 10px; /* Add margin to the left of the logo */
 }
 
 .App-header {
@@ -24,72 +14,36 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-logo-small {
+  height: 30px;
+  pointer-events: none;
+  margin-left: 10px;
 }
 
-.heart {
-  color: #ff0000;
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px 0px 10px;
+  margin: 10px 0;
 }
 
-.small {
-  font-size: 0.75rem;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  font-size: small;
-}
-
-h1 {
-  margin: 0.3em;
-}
-
-table {
-  width: 90%;
-  margin: 15px auto;
-  border-collapse: collapse;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-  table-layout: fixed; /* Ensure fixed column widths */
-}
-
-th,
-td {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  text-align: left;
-  line-height: 1.2; /* Adjust line height */
-}
-
-th {
-  background-color: #f4f4f4;
-}
-
-select {
-  padding: 8px;
-  margin: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: #fff;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-}
-
-pre {
-  margin: 0; /* Remove top and bottom margin */
+.repository-select {
+  order: 1; /* Force to first position */
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .tabs {
+  order: 2; /* Force to second position */
   display: flex;
-  justify-content: flex-start; /* Align tabs to the left */
-  margin-top: 10px;
-  margin-bottom: 10px;
+  justify-content: flex-end;
   gap: 10px;
 }
 
 .tabs button {
   padding: 10px 20px;
-  margin: 0 5px;
   border: none;
   border-radius: 4px;
   background-color: #ddd;
@@ -99,80 +53,4 @@ pre {
 .tabs button.active {
   background-color: #61dafb;
   color: white;
-}
-
-.fixed {
-  background-color: #d4edda; /* Muted green color */
-}
-
-.unfixed {
-  background-color: #f8d7da; /* Muted red color */
-}
-
-.toggleButton {
-  background-color: transparent;
-  color: #61dafb;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2em;
-  margin-left: 5px;
-}
-
-.toggleButton:hover {
-  color: #4a9fd8;
-}
-
-.description {
-  white-space: normal; /* Allow text to wrap */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.securityTable th:nth-child(3),
-.securityTable td:nth-child(2) {
-  width: 40%; /* Vulnerability column width */
-}
-
-.securityTable th,
-.securityTable td {
-  width: 8%; /* Other columns width */
-}
-
-.workflowTable th:nth-child(1),
-.workflowTable td:nth-child(1) {
-  width: 25%;
-}
-.workflowTable th:nth-child(2),
-.workflowTable td:nth-child(2) {
-  width: 15%; /* First and second columns width */
-}
-
-.workflowTable th:nth-child(3),
-.workflowTable td:nth-child(3) {
-  width: 15%; /* Third and fifth columns width */
-}
-
-.workflowTable th:nth-child(4),
-.workflowTable td:nth-child(5) {
-  width: 45%; /* Third and fifth columns width */
-}
-
-.controls-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.repository-select {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.repository-select select {
-  min-width: 200px;
-  padding: 5px 10px;
-  border-radius: 4px;
 }

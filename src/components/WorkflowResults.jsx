@@ -37,8 +37,8 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
   }
 
   return (
-    <div className="results workflowTable">
-      <table>
+    <div>
+      <table className="workflow-table">
         <thead>
           <tr>
             <th>Repository</th>

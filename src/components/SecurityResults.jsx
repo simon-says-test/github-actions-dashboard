@@ -39,8 +39,8 @@ const SecurityResults = ({ selectedRepo, filters }) => {
   if (!vulnerabilities.length) return <p>No matching vulnerabilities found</p>;
 
   return (
-    <div className="results">
-      <table className="securityTable">
+    <div>
+      <table className="security-table">
         <thead>
           <tr>
             <th>Severity</th>
