@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 const SecurityResults = ({ selectedRepo, filters }) => {
   const [vulnerabilities, setVulnerabilities] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [expandedVulns, setExpandedVulns] = useState({});
+  const [expandedVulnerabilities, setExpandedVulnerabilities] = useState({});
 
   useEffect(() => {
     const fetchVulnerabilities = async () => {
@@ -19,7 +19,7 @@ const SecurityResults = ({ selectedRepo, filters }) => {
         const data = await response.json();
         setVulnerabilities(data.vulnerabilities || []);
       } catch (error) {
-        console.error("Error fetching vulnerabilities:", error);
+        console.error('Error fetching vulnerabilities:', error);
       } finally {
         setIsLoading(false);
       }
@@ -28,8 +28,8 @@ const SecurityResults = ({ selectedRepo, filters }) => {
     fetchVulnerabilities();
   }, [selectedRepo, filters]);
 
-  const toggleExpand = (vulnNumber) => {
-    setExpandedVulns((prev) => ({
+  const toggleExpand = vulnNumber => {
+    setExpandedVulnerabilities(prev => ({
       ...prev,
       [vulnNumber]: !prev[vulnNumber],
     }));
@@ -52,7 +52,7 @@ const SecurityResults = ({ selectedRepo, filters }) => {
         </thead>
         <tbody>
           {vulnerabilities.map((vuln, index) => (
-            <tr key={`${vuln.number}-${index}`} className={vuln.fixed_at ? "fixed" : "unfixed"}>
+            <tr key={`${vuln.number}-${index}`} className={vuln.fixed_at ? 'fixed' : 'unfixed'}>
               <td>{vuln.security_vulnerability.severity}</td>
               <td>{vuln.state}</td>
               <td>
@@ -61,17 +61,19 @@ const SecurityResults = ({ selectedRepo, filters }) => {
                 </div>
                 <strong>Description:</strong>
                 <div className="description">
-                  {expandedVulns[vuln.number]
+                  {expandedVulnerabilities[vuln.number]
                     ? vuln.security_advisory.description
                     : `${vuln.security_advisory.description.substring(0, 100)}...`}
-                  <button onClick={() => toggleExpand(vuln.number)}>{expandedVulns[vuln.number] ? "▲" : "▼"}</button>
+                  <button onClick={() => toggleExpand(vuln.number)}>
+                    {expandedVulnerabilities[vuln.number] ? '▲' : '▼'}
+                  </button>
                 </div>
                 <a href={vuln.html_url} target="_blank" rel="noopener noreferrer">
                   Details
                 </a>
               </td>
               <td>{new Date(vuln.created_at).toLocaleDateString()}</td>
-              <td>{vuln.fixed_at ? new Date(vuln.fixed_at).toLocaleDateString() : "N/A"}</td>
+              <td>{vuln.fixed_at ? new Date(vuln.fixed_at).toLocaleDateString() : 'N/A'}</td>
             </tr>
           ))}
         </tbody>

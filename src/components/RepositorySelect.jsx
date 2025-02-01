@@ -12,7 +12,7 @@ const RepositorySelect = ({ repos, selectedRepo, onRepoChange }) => {
       <select
         id="repo-select"
         value={`${selectedRepo.owner}/${selectedRepo.name}`}
-        onChange={(e) => {
+        onChange={e => {
           const [owner, name] = e.target.value.split('/');
           onRepoChange(sortedRepos.find(r => r.owner === owner && r.name === name));
         }}

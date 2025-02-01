@@ -10,9 +10,9 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
       try {
         const response = await fetch(
           `${import.meta.env.VITE_API_BASE_URL}/api/workflows/runs?` +
-          `owner=${selectedRepo.owner}&` +
-          `repo=${selectedRepo.name}&` +
-          `workflow=${selectedWorkflow}`
+            `owner=${selectedRepo.owner}&` +
+            `repo=${selectedRepo.name}&` +
+            `workflow=${selectedWorkflow}`
         );
         const data = await response.json();
         setWorkflowRuns(data);
@@ -48,7 +48,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
           </tr>
         </thead>
         <tbody>
-          {workflowRuns.map((run, index) => (
+          {workflowRuns.map((run, index) =>
             run.testResults
               .filter(test => test.summary)
               .map((test, testIndex) => (
@@ -63,7 +63,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
                   </td>
                 </tr>
               ))
-          ))}
+          )}
         </tbody>
       </table>
     </div>

@@ -16,7 +16,7 @@ const App = () => {
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/config`);
         const data = await response.json();
         setConfig(data);
-        
+
         // Set initial repository
         if (data.repos.length > 0) {
           setSelectedRepo(data.repos[0]);
@@ -42,31 +42,17 @@ const App = () => {
       <main>
         <div className="controls-container">
           <div className="tabs">
-            <button 
-              className={activeTab === 'workflows' ? 'active' : ''} 
-              onClick={() => setActiveTab('workflows')}
-            >
+            <button className={activeTab === 'workflows' ? 'active' : ''} onClick={() => setActiveTab('workflows')}>
               Workflows
             </button>
-            <button 
-              className={activeTab === 'security' ? 'active' : ''} 
-              onClick={() => setActiveTab('security')}
-            >
+            <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
               Security
             </button>
           </div>
-          <RepositorySelect
-            repos={config.repos}
-            selectedRepo={selectedRepo}
-            onRepoChange={setSelectedRepo}
-          />
+          <RepositorySelect repos={config.repos} selectedRepo={selectedRepo} onRepoChange={setSelectedRepo} />
         </div>
-        {activeTab === 'workflows' && (
-          <WorkflowRuns selectedRepo={selectedRepo} />
-        )}
-        {activeTab === 'security' && (
-          <SecurityVulnerabilities selectedRepo={selectedRepo} />
-        )}
+        {activeTab === 'workflows' && <WorkflowRuns selectedRepo={selectedRepo} />}
+        {activeTab === 'security' && <SecurityVulnerabilities selectedRepo={selectedRepo} />}
       </main>
     </div>
   );

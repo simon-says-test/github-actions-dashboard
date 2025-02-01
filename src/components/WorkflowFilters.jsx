@@ -11,11 +11,11 @@ const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
       try {
         const response = await fetch(
           `${import.meta.env.VITE_API_BASE_URL}/api/workflows/names?` +
-          `owner=${selectedRepo.owner}&repo=${selectedRepo.name}`
+            `owner=${selectedRepo.owner}&repo=${selectedRepo.name}`
         );
         const data = await response.json();
         setWorkflows(data);
-        
+
         // Set first workflow as default if available
         if (data.length > 0) {
           const firstWorkflow = data[0];
@@ -32,7 +32,7 @@ const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
     fetchWorkflows();
   }, [selectedRepo, onWorkflowChange]);
 
-  const handleWorkflowChange = (event) => {
+  const handleWorkflowChange = event => {
     const newWorkflowId = event.target.value;
     setSelectedWorkflowId(newWorkflowId);
     onWorkflowChange(newWorkflowId);

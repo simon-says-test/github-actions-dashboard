@@ -6,7 +6,7 @@ const SecurityFilters = ({ onFilterChange }) => {
 
   const [filters, setFilters] = useState({
     severity: 'All',
-    status: 'Open'
+    status: 'Open',
   });
 
   const handleFilterChange = (type, value) => {
@@ -22,7 +22,7 @@ const SecurityFilters = ({ onFilterChange }) => {
         <select
           id="severity-select"
           value={filters.severity}
-          onChange={(e) => handleFilterChange('severity', e.target.value)}
+          onChange={e => handleFilterChange('severity', e.target.value)}
         >
           {severityOptions.map(severity => (
             <option key={severity} value={severity}>
@@ -34,11 +34,7 @@ const SecurityFilters = ({ onFilterChange }) => {
 
       <div className="filter-group">
         <label htmlFor="status-select">Status:</label>
-        <select
-          id="status-select"
-          value={filters.status}
-          onChange={(e) => handleFilterChange('status', e.target.value)}
-        >
+        <select id="status-select" value={filters.status} onChange={e => handleFilterChange('status', e.target.value)}>
           {statusOptions.map(status => (
             <option key={status} value={status}>
               {status}

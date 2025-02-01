@@ -6,19 +6,14 @@ import '../styles/SecurityVulnerabilities.css';
 const SecurityVulnerabilities = ({ selectedRepo }) => {
   const [filters, setFilters] = useState({
     severity: 'All',
-    status: 'Open'
+    status: 'Open',
   });
 
   return (
     <div className="security-vulnerabilities">
       <h2>Security Vulnerabilities</h2>
-      <SecurityFilters
-        onFilterChange={setFilters}
-      />
-      <SecurityResults
-        selectedRepo={selectedRepo}
-        filters={filters}
-      />
+      <SecurityFilters onFilterChange={setFilters} />
+      <SecurityResults selectedRepo={selectedRepo} filters={filters} />
     </div>
   );
 };

@@ -2,13 +2,13 @@ import express from 'express';
 import config from '../../src/config.js';
 
 const createConfigRoutes = () => {
-    const router = express.Router();
+  const router = express.Router();
 
-    router.get('/', (req, res) => {
-        res.json(config);
-    });
+  router.get('/', (req, res) => {
+    res.json(config);
+  });
 
-    return router;
+  return router;
 };
 
 export default createConfigRoutes;
