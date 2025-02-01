@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
+import styles from '../styles/WorkflowFilters.module.css'; // added CSS module import
 
 const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
   const [workflows, setWorkflows] = useState([]);
@@ -36,8 +37,8 @@ const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
   };
 
   return (
-    <div className="filters">
-      <div className="filter-group">
+    <div className={styles.filters}>
+      <div className={styles.filterGroup}>
         <label htmlFor="workflow-select">Workflow:</label>
         <select
           id="workflow-select"

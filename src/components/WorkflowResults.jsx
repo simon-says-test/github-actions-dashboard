@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
+import styles from '../styles/WorkflowResults.module.css'; // added CSS module import
 
 const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +39,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
 
   return (
     <div>
-      <table className="workflow-table">
+      <table className={styles.workflowTable}>
         <thead>
           <tr>
             <th>Repository</th>

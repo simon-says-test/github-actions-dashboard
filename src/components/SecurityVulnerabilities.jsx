@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SecurityFilters from './SecurityFilters';
 import SecurityResults from './SecurityResults';
-import '../styles/SecurityVulnerabilities.css';
+import styles from '../styles/SecurityVulnerabilities.module.css';
 
 const SecurityVulnerabilities = ({ selectedRepo }) => {
   const [filters, setFilters] = useState({
@@ -10,7 +10,7 @@ const SecurityVulnerabilities = ({ selectedRepo }) => {
   });
 
   return (
-    <div className="security-vulnerabilities">
+    <div className={styles.container}>
       <SecurityFilters onFilterChange={setFilters} />
       <SecurityResults selectedRepo={selectedRepo} filters={filters} />
     </div>

@@ -1,0 +1,45 @@
+.workflowTable {
+  width: 95%;
+  margin: 15px auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  table-layout: fixed;
+}
+
+.workflowTable th,
+.workflowTable td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.workflowTable th {
+  background-color: #f4f4f4;
+}
+
+.workflowTable pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Column widths */
+.workflowTable th:nth-child(1),
+.workflowTable td:nth-child(1) {
+  width: 25%;
+}
+
+.workflowTable th:nth-child(2),
+.workflowTable td:nth-child(2) {
+  width: 15%;
+}
+
+.workflowTable th:nth-child(3),
+.workflowTable td:nth-child(3) {
+  width: 15%;
+}
+
+.workflowTable th:nth-child(4),
+.workflowTable td:nth-child(4) {
+  width: 45%;
+}

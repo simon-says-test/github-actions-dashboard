@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styles/RepositorySelect.module.css';
 
 const RepositorySelect = ({ repos, selectedRepo, onRepoChange }) => {
   const sortedRepos = [...repos].sort((a, b) => {
@@ -7,9 +8,12 @@ const RepositorySelect = ({ repos, selectedRepo, onRepoChange }) => {
   });
 
   return (
-    <div className="repository-select filter-group">
-      <label htmlFor="repo-select">Repository:</label>
+    <div className={styles.container}>
+      <label className={styles.label} htmlFor="repo-select">
+        Repository:
+      </label>
       <select
+        className={styles.select}
         id="repo-select"
         value={`${selectedRepo.owner}/${selectedRepo.name}`}
         onChange={e => {

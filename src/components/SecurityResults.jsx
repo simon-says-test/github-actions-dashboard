@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
+import styles from '../styles/SecurityResults.module.css';
 
 const SecurityResults = ({ selectedRepo, filters }) => {
   const [vulnerabilities, setVulnerabilities] = useState([]);
@@ -39,7 +40,7 @@ const SecurityResults = ({ selectedRepo, filters }) => {
 
   return (
     <div>
-      <table className="security-table">
+      <table className={styles.securityTable}>
         <thead>
           <tr>
             <th>Severity</th>
@@ -51,7 +52,7 @@ const SecurityResults = ({ selectedRepo, filters }) => {
         </thead>
         <tbody>
           {vulnerabilities.map((vuln, index) => (
-            <tr key={`${vuln.number}-${index}`} className={vuln.fixed_at ? 'fixed' : 'unfixed'}>
+            <tr key={`${vuln.number}-${index}`} className={vuln.fixed_at ? styles.fixed : styles.unfixed}>
               <td>{vuln.security_vulnerability.severity}</td>
               <td>{vuln.state}</td>
               <td>
@@ -59,7 +60,7 @@ const SecurityResults = ({ selectedRepo, filters }) => {
                   <strong>Dependency:</strong> {vuln.dependency.package.name}
                 </div>
                 <strong>Description:</strong>
-                <div className="description">
+                <div className={styles.description}>
                   {expandedVulnerabilities[vuln.number]
                     ? vuln.security_advisory.description
                     : `${vuln.security_advisory.description.substring(0, 100)}...`}

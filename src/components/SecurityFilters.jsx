@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../styles/SecurityFilters.module.css';
 
 const SecurityFilters = ({ onFilterChange }) => {
   const severityOptions = ['All', 'Critical', 'High', 'Medium', 'Low'];
@@ -16,8 +17,8 @@ const SecurityFilters = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="filters">
-      <div className="filter-group">
+    <div className={styles.filters}>
+      <div className={styles.filterGroup}>
         <label htmlFor="severity-select">Severity:</label>
         <select
           id="severity-select"
@@ -32,7 +33,7 @@ const SecurityFilters = ({ onFilterChange }) => {
         </select>
       </div>
 
-      <div className="filter-group">
+      <div className={styles.filterGroup}>
         <label htmlFor="status-select">Status:</label>
         <select id="status-select" value={filters.status} onChange={e => handleFilterChange('status', e.target.value)}>
           {statusOptions.map(status => (

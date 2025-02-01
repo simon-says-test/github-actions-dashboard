@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import styles from './styles/App.module.css';
 import './styles/common.css';
-import './App.css';
 import RepositorySelect from './components/RepositorySelect';
 import WorkflowRuns from './components/WorkflowRuns';
 import SecurityVulnerabilities from './components/SecurityVulnerabilities';
@@ -34,18 +34,24 @@ const App = () => {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className={styles.app}>
+      <header className={styles.header}>
         <h1>GitHub Repository Dashboard</h1>
-        <img src="Octocat.png" className="App-logo-small" alt="logo" />
+        <img src="Octocat.png" className={styles.logoSmall} alt="logo" />
       </header>
       <main>
-        <div className="controls-container">
-          <div className="tabs">
-            <button className={activeTab === 'workflows' ? 'active' : ''} onClick={() => setActiveTab('workflows')}>
+        <div className={styles.controlsContainer}>
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tabButton} ${activeTab === 'workflows' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('workflows')}
+            >
               Workflows
             </button>
-            <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
+            <button
+              className={`${styles.tabButton} ${activeTab === 'security' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('security')}
+            >
               Security
             </button>
           </div>

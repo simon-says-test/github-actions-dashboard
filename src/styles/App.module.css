@@ -1,9 +1,8 @@
-/* App-specific styles */
-.App {
+.app {
   text-align: center;
 }
 
-.App-header {
+.header {
   background-color: #282c34;
   padding: 10px;
   display: flex;
@@ -14,13 +13,13 @@
   color: white;
 }
 
-.App-logo-small {
+.logoSmall {
   height: 30px;
   pointer-events: none;
   margin-left: 10px;
 }
 
-.controls-container {
+.controlsContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,21 +27,14 @@
   margin: 10px 0;
 }
 
-.repository-select {
-  order: 1; /* Force to first position */
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .tabs {
-  order: 2; /* Force to second position */
+  order: 2;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.tabs button {
+.tabButton {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -50,7 +42,7 @@
   cursor: pointer;
 }
 
-.tabs button.active {
+.activeTab {
   background-color: #61dafb;
   color: white;
 }
