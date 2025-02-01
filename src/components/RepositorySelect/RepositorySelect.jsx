@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/RepositorySelect.module.css';
+import styles from './RepositorySelect.module.css';
 
 const RepositorySelect = ({ repos, selectedRepo, onRepoChange }) => {
   const sortedRepos = [...repos].sort((a, b) => {

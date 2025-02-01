@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import SecurityFilters from './SecurityFilters';
-import SecurityResults from './SecurityResults';
-import styles from '../styles/SecurityVulnerabilities.module.css';
+import SecurityFilters from '../SecurityFilters/SecurityFilters';
+import SecurityResults from '../SecurityResults/SecurityResults';
+import styles from './SecurityVulnerabilities.module.css';
 
 const SecurityVulnerabilities = ({ selectedRepo }) => {
   const [filters, setFilters] = useState({

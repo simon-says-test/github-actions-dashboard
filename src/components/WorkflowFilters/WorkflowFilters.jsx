@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { apiService } from '../services/api';
-import styles from '../styles/WorkflowFilters.module.css'; // added CSS module import
+import { apiService } from '../../services/api';
+import styles from './/WorkflowFilters.module.css'; // added CSS module import
 
 const WorkflowFilters = ({ selectedRepo, onWorkflowChange }) => {
   const [workflows, setWorkflows] = useState([]);

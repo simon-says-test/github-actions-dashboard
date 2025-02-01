@@ -1,5 +1,5 @@
 import React from 'react';
-import WorkflowResults from '../components/WorkflowResults';
+import WorkflowResults from '../components/WorkflowResults/WorkflowResults';
 
 const meta = {
   title: 'Components/WorkflowResults',

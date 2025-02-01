@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
-import styles from '../styles/SecurityResults.module.css';
+import { apiService } from '../../services/api';
+import styles from './SecurityResults.module.css';
 
 const SecurityResults = ({ selectedRepo, filters }) => {
   const [vulnerabilities, setVulnerabilities] = useState([]);

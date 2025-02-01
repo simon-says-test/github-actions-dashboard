@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { apiService } from '../services/api';
-import styles from '../styles/WorkflowResults.module.css'; // added CSS module import
+import { apiService } from '../../services/api';
+import styles from './WorkflowResults.module.css'; // added CSS module import
 
 const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
   const [isLoading, setIsLoading] = useState(true);

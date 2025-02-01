@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../styles/SecurityFilters.module.css';
+import styles from './SecurityFilters.module.css';
 
 const SecurityFilters = ({ onFilterChange }) => {
   const severityOptions = ['All', 'Critical', 'High', 'Medium', 'Low'];

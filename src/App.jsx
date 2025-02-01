@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styles from './styles/App.module.css';
-import './styles/common.css';
-import RepositorySelect from './components/RepositorySelect';
-import WorkflowRuns from './components/WorkflowRuns';
-import SecurityVulnerabilities from './components/SecurityVulnerabilities';
+import styles from './App.module.css';
+import RepositorySelect from './components/RepositorySelect/RepositorySelect';
+import WorkflowRuns from './components/WorkflowRuns/WorkflowRuns';
+import SecurityVulnerabilities from './components/SecurityVulnerabilities/SecurityVulnerabilities';
 import { apiService } from './services/api';
 
 const App = () => {
