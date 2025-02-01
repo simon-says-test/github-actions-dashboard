@@ -33,12 +33,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "debug": "concurrently \"vite --port 3000\" \"nodemon --inspect server/index.js\""
+    "debug": "concurrently \"vite --port 3000\" \"nodemon --inspect server/index.js\"",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:storybook/recommended"
     ]
   },
   "browserslist": {
@@ -54,10 +57,21 @@
     ]
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.4",
+    "@storybook/addon-essentials": "^8.5.3",
+    "@storybook/addon-interactions": "^8.5.3",
+    "@storybook/addon-onboarding": "^8.5.3",
+    "@storybook/blocks": "^8.5.3",
+    "@storybook/react": "^8.5.3",
+    "@storybook/react-vite": "^8.5.3",
+    "@storybook/test": "^8.5.3",
     "@vitejs/plugin-react": "^4.1.1",
     "concurrently": "^7.0.0",
+    "eslint-plugin-storybook": "^0.11.2",
     "jsdom": "^22.1.0",
     "nodemon": "^2.0.15",
+    "prop-types": "^15.8.1",
+    "storybook": "^8.5.3",
     "vite": "^4.5.5",
     "vitest": "^0.34.6"
   }

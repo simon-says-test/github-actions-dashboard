@@ -1,0 +1,21 @@
+.workflow-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.workflow-table th,
+.workflow-table td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.workflow-table th {
+  background-color: #f5f5f5;
+}
+
+.workflow-table pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
