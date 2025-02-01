@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 
-const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
+const WorkflowResults = ({ selectedRepo, selectedWorkflow, mockData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [workflowRuns, setWorkflowRuns] = useState([]);
 
@@ -9,10 +9,15 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
     const fetchWorkflowRuns = async () => {
       setIsLoading(true);
       try {
-        const data = await apiService.fetchWorkflowRuns(selectedRepo.owner, selectedRepo.name, selectedWorkflow);
-        setWorkflowRuns(data);
+        if (mockData) {
+          setWorkflowRuns(mockData);
+        } else {
+          const data = await apiService.fetchWorkflowRuns(selectedRepo.owner, selectedRepo.name, selectedWorkflow);
+          setWorkflowRuns(data);
+        }
       } catch (error) {
         console.error('Error fetching workflow runs:', error);
+        setWorkflowRuns([]);
       } finally {
         setIsLoading(false);
       }
@@ -21,7 +26,7 @@ const WorkflowResults = ({ selectedRepo, selectedWorkflow }) => {
     if (selectedWorkflow !== 'all') {
       fetchWorkflowRuns();
     }
-  }, [selectedRepo, selectedWorkflow]);
+  }, [selectedRepo, selectedWorkflow, mockData]);
 
   if (isLoading) {
     return <p>Loading workflow data...</p>;
