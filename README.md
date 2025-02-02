@@ -50,12 +50,10 @@ Create a `.env` file in the root directory and add the following environment var
 ACTIONS_TOKEN=your_actual_token_here
 VITE_API_BASE_URL=http://localhost:5000
 NODE_ENV=development
-HOST=0.0.0.0
 ```
 
-If running in GitHub Codespace, HOST should be 127.0.0.1
-
-Ensure that the `ACTIONS_TOKEN` secret is correctly set in your Codespace settings.
+If running in GitHub Codespace, you can instead ensure that the `ACTIONS_TOKEN` secret is correctly set in your
+Codespace settings.
 
 ## Scripts
 
