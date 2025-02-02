@@ -1,26 +1,33 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "name": "React Vite Development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
   "hostRequirements": {
-    "cpus": 4
+    "cpus": 2
   },
   "waitFor": "onCreateCommand",
   "updateContentCommand": "npm install",
-  "postCreateCommand": "",
-  "postAttachCommand": {
-    "server": "npm start"
-  },
+  "postCreateCommand": "npm install -g vite",
   "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "formulahendry.auto-rename-tag"]
+    },
     "codespaces": {
-      "openFiles": [
-        "src/App.jsx"
-      ]
+      "openFiles": ["src/App.jsx"]
     }
   },
   "portsAttributes": {
     "3000": {
-      "label": "Application",
+      "label": "React Frontend",
       "onAutoForward": "openPreview"
+    },
+    "5000": {
+      "label": "API Server",
+      "onAutoForward": "notify"
+    },
+    "6006": {
+      "label": "Storybook",
+      "onAutoForward": "notify"
     }
   },
-  "forwardPorts": [3000]
+  "forwardPorts": [3000, 5000, 6006]
 }

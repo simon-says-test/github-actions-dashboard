@@ -29,11 +29,11 @@
     "postcss": "^8.4.31"
   },
   "scripts": {
-    "start": "concurrently \"vite --port 3000\" \"nodemon server/index.js\"",
+    "start": "concurrently \"vite --port 3000 --host $HOST\" \"nodemon server/index.js\"",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "debug": "concurrently \"vite --port 3000\" \"nodemon --inspect server/index.js\"",
+    "debug": "concurrently \"vite --port 3000 --host $HOST\" \"nodemon --inspect=$HOST server/index.js\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

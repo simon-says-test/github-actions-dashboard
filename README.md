@@ -1,6 +1,7 @@
 # Codespaces React Project
 
-This project is a React application that integrates with GitHub APIs to display workflow runs and security vulnerabilities.
+This project is a React application that integrates with GitHub APIs to display workflow runs and security
+vulnerabilities.
 
 ## Table of Contents
 
@@ -14,27 +15,30 @@ This project is a React application that integrates with GitHub APIs to display 
 ## Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/codespaces-react.git
-    cd codespaces-react
-    ```
+
+   ```bash
+   git clone https://github.com/your-username/codespaces-react.git
+   cd codespaces-react
+   ```
 
 2. Install dependencies:
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 ## Usage
 
 1. Start the development server:
-    ```bash
-    npm start
-    ```
+
+   ```bash
+   npm start
+   ```
 
 2. Start the backend server:
-    ```bash
-    npm run server
-    ```
+
+   ```bash
+   npm run server
+   ```
 
 3. Open your browser and navigate to `http://localhost:3000`.
 
@@ -43,9 +47,13 @@ This project is a React application that integrates with GitHub APIs to display 
 Create a `.env` file in the root directory and add the following environment variables:
 
 ```properties
-VITE_ACTIONS_TOKEN=your_actual_token_here
+ACTIONS_TOKEN=your_actual_token_here
 VITE_API_BASE_URL=http://localhost:5000
+NODE_ENV=development
+HOST=0.0.0.0
 ```
+
+If running in GitHub Codespace, HOST should be 127.0.0.1
 
 Ensure that the `ACTIONS_TOKEN` secret is correctly set in your Codespace settings.
 
